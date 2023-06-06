@@ -34,6 +34,7 @@
 *.sa*
 *.swo
 *.swp
+*.ss*
 *.til
 .fuse*
 .idea/

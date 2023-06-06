@@ -67,6 +67,7 @@ static union PokemonSubstruct *GetSubstruct(struct BoxPokemon *boxMon, u32 perso
 static u16 GetDeoxysStat(struct Pokemon *mon, s32 statId);
 static bool8 IsShinyOtIdPersonality(u32 otId, u32 personality);
 static u16 ModifyStatByNature(u8 nature, u16 n, u8 statIndex);
+static u16 ModifyStatsWithRandomPerturbance(u16 n, u8 statIndex, u32 personality);
 static u8 GetNatureFromPersonality(u32 personality);
 static bool8 PartyMonHasStatus(struct Pokemon *mon, u32 unused, u32 healMask, u8 battleId);
 static bool8 HealStatusConditions(struct Pokemon *mon, u32 unused, u32 healMask, u8 battleId);
@@ -2090,13 +2091,14 @@ static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
     return checksum;
 }
 
-#define CALC_STAT(base, iv, ev, statIndex, field)               \
-{                                                               \
-    u8 baseStat = gSpeciesInfo[species].base;                   \
-    s32 n = (((2 * baseStat + iv + ev / 4) * level) / 100) + 5; \
-    u8 nature = GetNature(mon);                                 \
-    n = ModifyStatByNature(nature, n, statIndex);               \
-    SetMonData(mon, field, &n);                                 \
+#define CALC_STAT(base, iv, ev, statIndex, field, personality)              \
+{                                                                           \
+    u8 baseStat = gSpeciesInfo[species].base;                               \
+    s32 n = (((2 * baseStat + iv + ev / 4) * level) / 100) + 5;             \
+    u8 nature = GetNature(mon);                                             \
+    n = ModifyStatsWithRandomPerturbance(n, statIndex, personality);        \
+    n = ModifyStatByNature(nature, n, statIndex);                           \
+    SetMonData(mon, field, &n);                                             \
 }
 
 void CalculateMonStats(struct Pokemon *mon)
@@ -2118,6 +2120,7 @@ void CalculateMonStats(struct Pokemon *mon)
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
     s32 level = GetLevelFromMonExp(mon);
     s32 newMaxHP;
+    u32 personality = GetMonData(mon, MON_DATA_PERSONALITY, NULL);
 
     SetMonData(mon, MON_DATA_LEVEL, &level);
 
@@ -2137,11 +2140,11 @@ void CalculateMonStats(struct Pokemon *mon)
 
     SetMonData(mon, MON_DATA_MAX_HP, &newMaxHP);
 
-    CALC_STAT(baseAttack, attackIV, attackEV, STAT_ATK, MON_DATA_ATK)
-    CALC_STAT(baseDefense, defenseIV, defenseEV, STAT_DEF, MON_DATA_DEF)
-    CALC_STAT(baseSpeed, speedIV, speedEV, STAT_SPEED, MON_DATA_SPEED)
-    CALC_STAT(baseSpAttack, spAttackIV, spAttackEV, STAT_SPATK, MON_DATA_SPATK)
-    CALC_STAT(baseSpDefense, spDefenseIV, spDefenseEV, STAT_SPDEF, MON_DATA_SPDEF)
+    CALC_STAT(baseAttack, attackIV, attackEV, STAT_ATK, MON_DATA_ATK, personality)
+    CALC_STAT(baseDefense, defenseIV, defenseEV, STAT_DEF, MON_DATA_DEF, personality)
+    CALC_STAT(baseSpeed, speedIV, speedEV, STAT_SPEED, MON_DATA_SPEED, personality)
+    CALC_STAT(baseSpAttack, spAttackIV, spAttackEV, STAT_SPATK, MON_DATA_SPATK, personality)
+    CALC_STAT(baseSpDefense, spDefenseIV, spDefenseEV, STAT_SPDEF, MON_DATA_SPDEF, personality)
 
     if (species == SPECIES_SHEDINJA)
     {
@@ -5499,11 +5502,7 @@ static u16 ModifyStatByNature(u8 nature, u16 stat, u8 statIndex)
 // Neither occur in the base game, but this can happen if
 // any Nature-affected base stat is increased to a value
 // above 248. The closest by default is Shuckle at 230.
-#ifdef BUGFIX
     u32 retVal;
-#else
-    u16 retVal;
-#endif
 
     // Don't modify HP, Accuracy, or Evasion by nature
     if (statIndex <= STAT_HP || statIndex > NUM_NATURE_STATS)
@@ -5523,6 +5522,35 @@ static u16 ModifyStatByNature(u8 nature, u16 stat, u8 statIndex)
         retVal = stat;
         break;
     }
+
+    return retVal;
+}
+
+static u16 ModifyStatsWithRandomPerturbance(u16 stat, u8 statIndex, u32 personality)
+{
+    // Generate a random perturbance of the pokemon's stats via their personality value
+    u32 retVal;
+    u32 randVal = personality;
+    u32 multiplier;
+    u32 deviance;
+    u32 pos_variance = 30; // allow stats to be up to 30% improved
+    u32 neg_variance = 15; // allow stats to be at most 15% dropped
+    u8 i;
+
+    // Don't modify Accuracy or Evasion here
+    if (statIndex > NUM_NATURE_STATS)
+        return stat;
+
+    for(i = 0; i < (statIndex + 1); i++){
+        randVal = SeededRandom(randVal);  // seed the random value with the personality value and then cycle by index
+    }
+
+    // generate a deviance between -15% and +30%
+    deviance = (randVal % (pos_variance + neg_variance + 1)) - neg_variance;
+    multiplier = deviance + 100;
+
+    retVal = stat * multiplier;
+    retVal /= 100;
 
     return retVal;
 }
@@ -5811,6 +5839,7 @@ bool8 TryIncrementMonLevel(struct Pokemon *mon)
 
 u32 CanMonLearnTMHM(struct Pokemon *mon, u8 tm)
 {
+    // TODO: Function of interest 
     u16 species = GetMonData(mon, MON_DATA_SPECIES_OR_EGG, NULL);
     if (species == SPECIES_EGG)
     {
