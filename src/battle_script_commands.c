@@ -4483,8 +4483,8 @@ static void Cmd_switchindataupdate(void)
     for (i = 0; i < sizeof(struct BattlePokemon); i++)
         monData[i] = gBattleBufferB[gActiveBattler][4 + i];
 
-    gBattleMons[gActiveBattler].type1 = DeriveDynamicTyping(gSpeciesInfo[gBattleMons[gActiveBattler].species].types[0], gSpeciesInfo[gBattleMons[gActiveBattler].species].types[1], GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_PERSONALITY), 1);
-    gBattleMons[gActiveBattler].type2 = DeriveDynamicTyping(gSpeciesInfo[gBattleMons[gActiveBattler].species].types[0], gSpeciesInfo[gBattleMons[gActiveBattler].species].types[1], GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_PERSONALITY), 0);
+    gBattleMons[gActiveBattler].type1 = DeriveDynamicTyping(gSpeciesInfo[gBattleMons[gActiveBattler].species].types[0], gSpeciesInfo[gBattleMons[gActiveBattler].species].types[1], gBattleMons[gActiveBattler].personality, 1);
+    gBattleMons[gActiveBattler].type2 = DeriveDynamicTyping(gSpeciesInfo[gBattleMons[gActiveBattler].species].types[0], gSpeciesInfo[gBattleMons[gActiveBattler].species].types[1], gBattleMons[gActiveBattler].personality, 0);
     //gBattleMons[gActiveBattler].type1 = gSpeciesInfo[gBattleMons[gActiveBattler].species].types[0];
     //gBattleMons[gActiveBattler].type2 = gSpeciesInfo[gBattleMons[gActiveBattler].species].types[1];
     gBattleMons[gActiveBattler].ability = GetAbilityBySpecies(gBattleMons[gActiveBattler].species, gBattleMons[gActiveBattler].abilityNum);
