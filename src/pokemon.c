@@ -2494,6 +2494,8 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     u8 defenderHoldEffectParam;
     u8 attackerHoldEffect;
     u8 attackerHoldEffectParam;
+    bool8 isPhysical = 0;
+    bool8 isSpecial = 0;
 
     if (!powerOverride)
         gBattleMovePower = gBattleMoves[move].power;
@@ -2546,13 +2548,23 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (ShouldGetStatBadgeBoost(FLAG_BADGE07_GET, battlerIdDef))
         spDefense = (110 * spDefense) / 100;
 
+    if (gBattleMoves[move].flags & FLAG_IS_PHYSICAL_ATTACK)
+        isPhysical = 1;
+    else if (gBattleMoves[move].flags & FLAG_IS_SPECIAL_ATTACK)
+        isSpecial = 1;
+    else if IS_TYPE_PHYSICAL(type)
+        isPhysical = 1;
+    else if IS_TYPE_SPECIAL(type)
+        isSpecial = 1;
+
     // Apply type-bonus hold item
     for (i = 0; i < ARRAY_COUNT(sHoldEffectToType); i++)
     {
         if (attackerHoldEffect == sHoldEffectToType[i][0]
             && type == sHoldEffectToType[i][1])
         {
-            if (IS_TYPE_PHYSICAL(type))
+            if (isPhysical) 
+                // implemented such that the OG method applies if not explicitly overriden
                 attack = (attack * (attackerHoldEffectParam + 100)) / 100;
             else
                 spAttack = (spAttack * (attackerHoldEffectParam + 100)) / 100;
@@ -2606,7 +2618,7 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (gBattleMoves[gCurrentMove].effect == EFFECT_EXPLOSION)
         defense /= 2;
 
-    if (IS_TYPE_PHYSICAL(type))
+    if (isPhysical)
     {
         if (gCritMultiplier == 2)
         {
@@ -2661,7 +2673,7 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (type == TYPE_MYSTERY)
         damage = 0; // is ??? type. does 0 damage.
 
-    if (IS_TYPE_SPECIAL(type))
+    if (isSpecial)
     {
         if (gCritMultiplier == 2)
         {

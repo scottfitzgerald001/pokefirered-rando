@@ -1825,7 +1825,37 @@ static void Cmd_datahpupdate(void)
                 if (!gSpecialStatuses[gActiveBattler].dmg && !(gHitMarker & HITMARKER_PASSIVE_DAMAGE))
                     gSpecialStatuses[gActiveBattler].dmg = gHpDealt;
 
-                if (IS_TYPE_PHYSICAL(moveType) && !(gHitMarker & HITMARKER_PASSIVE_DAMAGE) && gCurrentMove != MOVE_PAIN_SPLIT)
+                if ((gBattleMoves[gCurrentMove].flags & FLAG_IS_PHYSICAL_ATTACK) && !(gHitMarker & HITMARKER_PASSIVE_DAMAGE) && gCurrentMove != MOVE_PAIN_SPLIT)
+                {
+                    gProtectStructs[gActiveBattler].physicalDmg = gHpDealt;
+                    gSpecialStatuses[gActiveBattler].physicalDmg = gHpDealt;
+                    if (gBattlescriptCurrInstr[1] == BS_TARGET)
+                    {
+                        gProtectStructs[gActiveBattler].physicalBattlerId = gBattlerAttacker;
+                        gSpecialStatuses[gActiveBattler].physicalBattlerId = gBattlerAttacker;
+                    }
+                    else
+                    {
+                        gProtectStructs[gActiveBattler].physicalBattlerId = gBattlerTarget;
+                        gSpecialStatuses[gActiveBattler].physicalBattlerId = gBattlerTarget;
+                    }
+                }
+                else if ((gBattleMoves[gCurrentMove].flags & FLAG_IS_SPECIAL_ATTACK) && !(gHitMarker & HITMARKER_PASSIVE_DAMAGE))
+                {
+                    gProtectStructs[gActiveBattler].specialDmg = gHpDealt;
+                    gSpecialStatuses[gActiveBattler].specialDmg = gHpDealt;
+                    if (gBattlescriptCurrInstr[1] == BS_TARGET)
+                    {
+                        gProtectStructs[gActiveBattler].specialBattlerId = gBattlerAttacker;
+                        gSpecialStatuses[gActiveBattler].specialBattlerId = gBattlerAttacker;
+                    }
+                    else
+                    {
+                        gProtectStructs[gActiveBattler].specialBattlerId = gBattlerTarget;
+                        gSpecialStatuses[gActiveBattler].specialBattlerId = gBattlerTarget;
+                    }
+                }
+                else if (IS_TYPE_PHYSICAL(moveType) && !(gHitMarker & HITMARKER_PASSIVE_DAMAGE) && gCurrentMove != MOVE_PAIN_SPLIT)
                 {
                     gProtectStructs[gActiveBattler].physicalDmg = gHpDealt;
                     gSpecialStatuses[gActiveBattler].physicalDmg = gHpDealt;
