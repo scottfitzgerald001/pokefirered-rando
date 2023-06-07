@@ -2733,7 +2733,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
     [MOVE_FURY_CUTTER] =
     {
         .effect = EFFECT_FURY_CUTTER,
-        .power = 20,
+        .power = 10,
         .type = TYPE_BUG,
         .accuracy = 95,
         .pp = 20,
@@ -4609,19 +4609,6 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .type = TYPE_PSYCHIC,
         .accuracy = 90,
         .pp = 5,
-        .secondaryEffectChance = 100,
-        .target = MOVE_TARGET_SELECTED,
-        .priority = 0,
-        .flags = FLAG_PROTECT_AFFECTED | FLAG_MIRROR_MOVE_AFFECTED | FLAG_KINGS_ROCK_AFFECTED,
-    },
-
-    [MOVE_U_TURN] =
-    {
-        .effect = EFFECT_U_TURN,
-        .power = 70,
-        .type = TYPE_BUG,
-        .accuracy = 100,
-        .pp = 20,
         .secondaryEffectChance = 100,
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
