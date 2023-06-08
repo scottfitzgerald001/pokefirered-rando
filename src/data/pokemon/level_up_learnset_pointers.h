@@ -1,3 +1,5 @@
+#define NUMBER_OF_MON_TYPES 18
+
 const u16 *const gLevelUpLearnsets[NUM_SPECIES] =
 {
     [SPECIES_NONE] = sBulbasaurLevelUpLearnset,
@@ -412,4 +414,25 @@ const u16 *const gLevelUpLearnsets[NUM_SPECIES] =
     [SPECIES_JIRACHI] = sJirachiLevelUpLearnset,
     [SPECIES_DEOXYS] = sDeoxysLevelUpLearnset,
     [SPECIES_CHIMECHO] = sChimechoLevelUpLearnset,
+};
+
+const u16 *const gLevelUpTypeLearnsets[NUMBER_OF_MON_TYPES] = {
+    [TYPE_NORMAL] = sNormalTypeLevelUpLearnset,
+    [TYPE_FIGHTING] = sFightingTypeLevelUpLearnset,
+    [TYPE_FLYING] = sFlyingTypeLevelUpLearnset,
+    [TYPE_POISON] = sPoisonTypeLevelUpLearnset,
+    [TYPE_GROUND] = sGroundTypeLevelUpLearnset,
+    [TYPE_ROCK] = sRockTypeLevelUpLearnset,
+    [TYPE_BUG] = sBugTypeLevelUpLearnset,
+    [TYPE_GHOST] = sGhostTypeLevelUpLearnset,
+    [TYPE_STEEL] = sSteelTypeLevelUpLearnset,
+    [TYPE_MYSTERY] = sMysteryTypeLevelUpLearnset,
+    [TYPE_FIRE] = sFireTypeLevelUpLearnset,
+    [TYPE_WATER] = sWaterTypeLevelUpLearnset,
+    [TYPE_GRASS] = sGrassTypeLevelUpLearnset,
+    [TYPE_ELECTRIC] = sElectricTypeLevelUpLearnset,
+    [TYPE_PSYCHIC] = sPsychicTypeLevelUpLearnset,
+    [TYPE_ICE] = sIceTypeLevelUpLearnset,
+    [TYPE_DRAGON] = sDragonTypeLevelUpLearnset,
+    [TYPE_DARK] = sDarkTypeLevelUpLearnset,
 };

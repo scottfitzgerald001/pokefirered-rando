@@ -1,10 +1,82 @@
 #define LEVEL_UP_MOVE(lvl, move) ((lvl << 9) | move)
 #define LEVEL_UP_END 0xFFFF
 
+static const u16 sNormalTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_POUND),
+    LEVEL_UP_END
+};
+static const u16 sFightingTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_DOUBLE_KICK),
+    LEVEL_UP_END
+};
+static const u16 sFlyingTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_GUST),
+    LEVEL_UP_END
+};
+static const u16 sPoisonTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_POISON_STING),
+    LEVEL_UP_END
+};
+static const u16 sGroundTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_MUD_SLAP),
+    LEVEL_UP_END
+};
+static const u16 sRockTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_ROCK_THROW),
+    LEVEL_UP_END
+};
+static const u16 sBugTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_LEECH_LIFE),
+    LEVEL_UP_END
+};
+static const u16 sGhostTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_LICK),
+    LEVEL_UP_END
+};
+static const u16 sSteelTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_METAL_CLAW),
+    LEVEL_UP_END
+};
+static const u16 sMysteryTypeLevelUpLearnset[] = {
+    LEVEL_UP_END
+};
+static const u16 sFireTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_EMBER),
+    LEVEL_UP_END
+};
+static const u16 sWaterTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_BUBBLE),
+    LEVEL_UP_END
+};
+static const u16 sGrassTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_VINE_WHIP),
+    LEVEL_UP_END
+};
+static const u16 sElectricTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_THUNDER_SHOCK),
+    LEVEL_UP_END
+};
+static const u16 sPsychicTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_CONFUSION),
+    LEVEL_UP_END
+};
+static const u16 sIceTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_POWDER_SNOW),
+    LEVEL_UP_END
+};
+static const u16 sDragonTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_TWISTER),
+    LEVEL_UP_END
+};
+static const u16 sDarkTypeLevelUpLearnset[] = {
+    LEVEL_UP_MOVE(5, MOVE_PURSUIT),
+    LEVEL_UP_END
+};
+
 static const u16 sBulbasaurLevelUpLearnset[] = {
     LEVEL_UP_MOVE(1, MOVE_TACKLE),
     LEVEL_UP_MOVE(4, MOVE_GROWL),
-    LEVEL_UP_MOVE(5, MOVE_LEECH_SEED), // adjusted lower to prevent issues with encountering ghost types early on
+    LEVEL_UP_MOVE(7, MOVE_LEECH_SEED),
     LEVEL_UP_MOVE(10, MOVE_VINE_WHIP),
     LEVEL_UP_MOVE(15, MOVE_POISON_POWDER),
     LEVEL_UP_MOVE(15, MOVE_SLEEP_POWDER),
@@ -54,7 +126,7 @@ static const u16 sVenusaurLevelUpLearnset[] = {
 static const u16 sCharmanderLevelUpLearnset[] = {
     LEVEL_UP_MOVE(1, MOVE_SCRATCH),
     LEVEL_UP_MOVE(1, MOVE_GROWL),
-    LEVEL_UP_MOVE(5, MOVE_EMBER), // adjusted lower to prevent issues with encountering ghost types early on
+    LEVEL_UP_MOVE(7, MOVE_EMBER),
     LEVEL_UP_MOVE(13, MOVE_METAL_CLAW),
     LEVEL_UP_MOVE(19, MOVE_SMOKESCREEN),
     LEVEL_UP_MOVE(25, MOVE_SCARY_FACE),
@@ -101,7 +173,7 @@ static const u16 sCharizardLevelUpLearnset[] = {
 static const u16 sSquirtleLevelUpLearnset[] = {
     LEVEL_UP_MOVE(1, MOVE_TACKLE),
     LEVEL_UP_MOVE(4, MOVE_TAIL_WHIP),
-    LEVEL_UP_MOVE(5, MOVE_BUBBLE), // adjusted lower to prevent issues with encountering ghost types early on
+    LEVEL_UP_MOVE(7, MOVE_BUBBLE),
     LEVEL_UP_MOVE(10, MOVE_WITHDRAW),
     LEVEL_UP_MOVE(13, MOVE_WATER_GUN),
     LEVEL_UP_MOVE(18, MOVE_BITE),
@@ -247,6 +319,8 @@ static const u16 sPidgeotLevelUpLearnset[] = {
 static const u16 sRattataLevelUpLearnset[] = {
     LEVEL_UP_MOVE(1, MOVE_TACKLE),
     LEVEL_UP_MOVE(1, MOVE_TAIL_WHIP),
+    LEVEL_UP_MOVE(3, MOVE_U_TURN),
+    LEVEL_UP_MOVE(4, MOVE_SILVER_WIND),
     LEVEL_UP_MOVE(7, MOVE_QUICK_ATTACK),
     LEVEL_UP_MOVE(13, MOVE_HYPER_FANG),
     LEVEL_UP_MOVE(20, MOVE_FOCUS_ENERGY),

@@ -173,12 +173,12 @@ struct PokemonSummaryScreenData
         u8 ALIGNED(4) genderSymbolStrBuf[3];
         u8 ALIGNED(4) levelStrBuf[7];
         u8 ALIGNED(4) curHpStrBuf[9];
-        u8 ALIGNED(4) statValueStrBufs[5][5];
+        u8 ALIGNED(4) statValueStrBufs[5][15];
 
         u8 ALIGNED(4) moveCurPpStrBufs[5][11];
         u8 ALIGNED(4) moveMaxPpStrBufs[5][11];
         u8 ALIGNED(4) moveNameStrBufs[5][MOVE_NAME_LENGTH + 1];
-        u8 ALIGNED(4) movePowerStrBufs[5][5];
+        u8 ALIGNED(4) movePowerStrBufs[5][11];
         u8 ALIGNED(4) moveAccuracyStrBufs[5][5];
 
         u8 ALIGNED(4) expPointsStrBuf[9];
@@ -2159,8 +2159,11 @@ static void BufferMonSkills(void)
     u16 species;
     u16 hp;
     u16 statValue;
+    s32 statModifier;
     u32 exp;
     u32 expToNextLevel;
+    s32 textOffset;
+    u8 *txtPtr;
 
     hp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_HP);
     ConvertIntToDecimalStringN(sMonSummaryScreen->summary.curHpStrBuf, hp, STR_CONV_MODE_LEFT_ALIGN, 3);
@@ -2196,25 +2199,36 @@ static void BufferMonSkills(void)
     }
     else
     {
+        textOffset = -40;
         statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK);
-        ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_ATK], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
-        sMonSkillsPrinterXpos->atkStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_ATK]);
+        statModifier = GetStatModifierDevianceVal(STAT_ATK, GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_PERSONALITY));
+        txtPtr = AddModifier(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_ATK], 2, statModifier);
+        ConvertIntToDecimalStringN(txtPtr++, statValue, STR_CONV_MODE_RIGHT_ALIGN, 3);   
+        sMonSkillsPrinterXpos->atkStr = textOffset;
 
         statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF);
-        ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_DEF], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
-        sMonSkillsPrinterXpos->defStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_DEF]);
+        statModifier = GetStatModifierDevianceVal(STAT_DEF, GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_PERSONALITY));
+        txtPtr = AddModifier(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_DEF], 2, statModifier);
+        ConvertIntToDecimalStringN(txtPtr++, statValue, STR_CONV_MODE_RIGHT_ALIGN, 3);
+        sMonSkillsPrinterXpos->defStr = textOffset;
 
         statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK);
-        ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPA], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
-        sMonSkillsPrinterXpos->spAStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPA]);
+        statModifier = GetStatModifierDevianceVal(STAT_SPATK, GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_PERSONALITY));
+        txtPtr = AddModifier(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPA], 2, statModifier);
+        ConvertIntToDecimalStringN(txtPtr++, statValue, STR_CONV_MODE_RIGHT_ALIGN, 3);
+        sMonSkillsPrinterXpos->spAStr = textOffset;
 
         statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF);
-        ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPD], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
-        sMonSkillsPrinterXpos->spDStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPD]);
+        statModifier = GetStatModifierDevianceVal(STAT_SPDEF, GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_PERSONALITY));
+        txtPtr = AddModifier(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPD], 2, statModifier);
+        ConvertIntToDecimalStringN(txtPtr++, statValue, STR_CONV_MODE_RIGHT_ALIGN, 3);
+        sMonSkillsPrinterXpos->spDStr = textOffset;
 
         statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED);
-        ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPE], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
-        sMonSkillsPrinterXpos->speStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPE]);
+        statModifier = GetStatModifierDevianceVal(STAT_SPEED, GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_PERSONALITY));
+        txtPtr = AddModifier(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPE], 2, statModifier);
+        ConvertIntToDecimalStringN(txtPtr++, statValue, STR_CONV_MODE_RIGHT_ALIGN, 3);
+        sMonSkillsPrinterXpos->speStr = textOffset;
     }
 
     exp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_EXP);
@@ -2257,6 +2271,9 @@ static void BufferMonMoves(void)
 
 static void BufferMonMoveI(u8 i)
 {
+    bool8 isPhysical;
+    u8 *txtPtr;
+
     if (i < 4)
         sMonSummaryScreen->moveIds[i] = GetMonMoveBySlotId(&sMonSummaryScreen->currentMon, i);
 
@@ -2294,10 +2311,20 @@ static void BufferMonMoveI(u8 i)
     sMonSkillsPrinterXpos->curPp[i] = GetRightAlignXpos_NDigits(2, sMonSummaryScreen->summary.moveCurPpStrBufs[i]);
     sMonSkillsPrinterXpos->maxPp[i] = GetRightAlignXpos_NDigits(2, sMonSummaryScreen->summary.moveMaxPpStrBufs[i]);
 
+    if (gBattleMoves[sMonSummaryScreen->moveIds[i]].flags & FLAG_IS_PHYSICAL_ATTACK)
+        isPhysical = 1;
+    else if (gBattleMoves[sMonSummaryScreen->moveIds[i]].flags & FLAG_IS_SPECIAL_ATTACK)
+        isPhysical = 0;
+    else if (IS_TYPE_PHYSICAL(gBattleMoves[sMonSummaryScreen->moveIds[i]].type))
+        isPhysical = 1;
+    else 
+        isPhysical = 0;
+
     if (gBattleMoves[sMonSummaryScreen->moveIds[i]].power <= 1)
         StringCopy(sMonSummaryScreen->summary.movePowerStrBufs[i], gText_ThreeHyphens);
     else
-        ConvertIntToDecimalStringN(sMonSummaryScreen->summary.movePowerStrBufs[i], gBattleMoves[sMonSummaryScreen->moveIds[i]].power, STR_CONV_MODE_RIGHT_ALIGN, 3);
+        txtPtr = ConvertIntToDecimalStringN(sMonSummaryScreen->summary.movePowerStrBufs[i], gBattleMoves[sMonSummaryScreen->moveIds[i]].power, STR_CONV_MODE_RIGHT_ALIGN, 3);
+        AddAttackType(txtPtr, isPhysical);
 
     if (gBattleMoves[sMonSummaryScreen->moveIds[i]].accuracy == 0)
         StringCopy(sMonSummaryScreen->summary.moveAccuracyStrBufs[i], gText_ThreeHyphens);

@@ -217,6 +217,102 @@ u8 *ConvertIntToDecimalStringN(u8 *dest, s32 value, enum StringConvertMode mode,
     return dest;
 }
 
+u8 *AddAttackType(u8 *dest, bool8 isPhysical)
+{
+    // Add special/physical notation
+    *dest = CHAR_SPACE;
+    *dest++ = CHAR_SPACE;
+    *dest++ = CHAR_SPACE;
+
+    if (isPhysical) {
+        *dest++ = CHAR_P;
+        *dest++ = CHAR_H;
+        *dest++ = CHAR_Y;
+    } 
+    else {
+        *dest++ = CHAR_S;
+        *dest++ = CHAR_P;
+        *dest++ = CHAR_C;
+    }
+
+    *dest = EOS;
+    return dest;
+}
+
+u8 *AddModifier(u8 *dest, u8 n, s32 modifier)
+{
+    enum { WAITING_FOR_NONZERO_DIGIT, WRITING_DIGITS, WRITING_SPACES } state;
+    s32 powerOfTen;
+    s32 largestPowerOfTen = sPowersOfTen[n - 1];
+    u32 value;
+    s32 valueCnvrt;
+
+    state = WRITING_SPACES;
+
+    if (modifier < 0) {
+        *dest++ = CHAR_DOWN_ARROW;
+        valueCnvrt = 0 - modifier;
+        value = valueCnvrt;
+    }
+    else {
+        *dest++ = CHAR_UP_ARROW;
+        value = modifier; // if postive or zero let value be the conversion of unsigned to signed
+    }
+
+    for (powerOfTen = largestPowerOfTen; powerOfTen > 0; powerOfTen /= 10)
+    {
+        u8 *out;
+        u8 c;
+        u16 digit = value / powerOfTen;
+        s32 temp = value - (powerOfTen * digit);
+
+        if (state == WRITING_DIGITS)
+        {
+            out = dest++;
+
+            if (digit <= 9)
+                c = sDigits[digit];
+            else
+                c = CHAR_QUESTION_MARK;
+
+            *out = c;
+        }
+        else if (digit != 0 || powerOfTen == 1)
+        {
+            state = WRITING_DIGITS;
+            out = dest++;
+
+            if (digit <= 9)
+                c = sDigits[digit];
+            else
+                c = CHAR_QUESTION_MARK;
+
+            *out = c;
+        }
+        else if (state == WRITING_SPACES)
+        {
+            *dest++ = CHAR_SPACE;
+        }
+
+        value = temp;
+    }
+
+    *dest++ = CHAR_PERCENT;
+    *dest++ = CHAR_SPACE;
+    *dest++ = CHAR_SPACE;
+    
+    return dest;
+}
+
+u8 *AddSpaces(u8 *dest, u8 n){
+    u8 i;
+    for (i = 0; i < n; i++){
+        *dest++ = CHAR_SPACE;
+    }
+    return dest;
+}
+
+
 u8 *ConvertIntToHexStringN(u8 *dest, s32 value, enum StringConvertMode mode, u8 n)
 {
     enum { WAITING_FOR_NONZERO_DIGIT, WRITING_DIGITS, WRITING_SPACES } state;
