@@ -56,6 +56,7 @@ struct MonSpritesGfxManager
 };
 
 static EWRAM_DATA u8 sLearningMoveTableID = 0;
+static EWRAM_DATA u8 sLearningMoveTableTableID = 0;
 EWRAM_DATA u8 gPlayerPartyCount = 0;
 EWRAM_DATA u8 gEnemyPartyCount = 0;
 EWRAM_DATA struct Pokemon gEnemyParty[PARTY_SIZE] = {};
@@ -2366,22 +2367,56 @@ static void GiveBoxMonInitialMoveset(struct BoxPokemon *boxMon)
 {
     u16 species = GetBoxMonData(boxMon, MON_DATA_SPECIES, NULL);
     s32 level = GetLevelFromBoxMonExp(boxMon);
-    s32 i;
-
-    for (i = 0; gLevelUpLearnsets[species][i] != LEVEL_UP_END; i++)
+    s32 i = 0, t1 = 0, t2 = 0;
+    u16 moveLevelLearnset, moveLevelType1, moveLevelType2;
+    u8 type1 = DeriveDynamicTyping(gSpeciesInfo[species].types[0], gSpeciesInfo[species].types[1], GetBoxMonData(boxMon, MON_DATA_PERSONALITY, NULL), 1);
+    u8 type2 = DeriveDynamicTyping(gSpeciesInfo[species].types[0], gSpeciesInfo[species].types[1], GetBoxMonData(boxMon, MON_DATA_PERSONALITY, NULL), 0);
+    
+    while(gLevelUpLearnsets[species][i] != LEVEL_UP_END || gLevelUpTypeLearnsets[type1][t1] != LEVEL_UP_END || gLevelUpTypeLearnsets[type2][t2] != LEVEL_UP_END)
     {
-        u16 moveLevel;
         u16 move;
+        moveLevelLearnset = (gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_LV);
+        moveLevelType1 = (gLevelUpTypeLearnsets[type1][t1] & LEVEL_UP_MOVE_LV);
+        moveLevelType2 = (gLevelUpTypeLearnsets[type2][t2] & LEVEL_UP_MOVE_LV);
 
-        moveLevel = (gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_LV);
+        if(gLevelUpLearnsets[species][i] != LEVEL_UP_END && moveLevelLearnset <= moveLevelType1 && moveLevelLearnset <= moveLevelType2){
+            if (moveLevelLearnset > (level << 9))
+                break;
 
-        if (moveLevel > (level << 9))
+            move = (gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_ID);
+
+            if (GiveMoveToBoxMon(boxMon, move) == MON_HAS_MAX_MOVES)
+                DeleteFirstMoveAndGiveMoveToBoxMon(boxMon, move);
+            
+            i++;
+        }
+        else if (gLevelUpTypeLearnsets[type1][t1] != LEVEL_UP_END && moveLevelType1 <= moveLevelLearnset && moveLevelType1 <= moveLevelType2) {
+            if (moveLevelType1 > (level << 9))
+                break;
+
+            move = (gLevelUpTypeLearnsets[type1][t1] & LEVEL_UP_MOVE_ID);
+
+            if (GiveMoveToBoxMon(boxMon, move) == MON_HAS_MAX_MOVES)
+                DeleteFirstMoveAndGiveMoveToBoxMon(boxMon, move);
+            
+            t1++;
+            if(type2 == type1) // hack for skipping move checks for the same type
+                t2++;
+        }
+        else if (gLevelUpTypeLearnsets[type2][t2] != LEVEL_UP_END && moveLevelType2 <= moveLevelLearnset && moveLevelType2 <= moveLevelType1) {
+            if (moveLevelType1 > (level << 9))
+                break;
+
+            move = (gLevelUpTypeLearnsets[type2][t2] & LEVEL_UP_MOVE_ID);
+
+            if (GiveMoveToBoxMon(boxMon, move) == MON_HAS_MAX_MOVES)
+                DeleteFirstMoveAndGiveMoveToBoxMon(boxMon, move);
+            
+            t2++;
+        }
+        else {
             break;
-
-        move = (gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_ID);
-
-        if (GiveMoveToBoxMon(boxMon, move) == MON_HAS_MAX_MOVES)
-            DeleteFirstMoveAndGiveMoveToBoxMon(boxMon, move);
+        }
     }
 }
 
@@ -2390,6 +2425,9 @@ u16 MonTryLearningNewMove(struct Pokemon *mon, bool8 firstMove)
     u32 retVal = MOVE_NONE;
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
     u8 level = GetMonData(mon, MON_DATA_LEVEL, NULL);
+    bool8 noMoveFound = 0;
+    u8 type1 = DeriveDynamicTyping(gSpeciesInfo[species].types[0], gSpeciesInfo[species].types[1], GetMonData(mon, MON_DATA_PERSONALITY, NULL), 1);
+    u8 type2 = DeriveDynamicTyping(gSpeciesInfo[species].types[0], gSpeciesInfo[species].types[1], GetMonData(mon, MON_DATA_PERSONALITY, NULL), 0);
 
     // since you can learn more than one move per level
     // the game needs to know whether you decided to
@@ -2398,20 +2436,105 @@ u16 MonTryLearningNewMove(struct Pokemon *mon, bool8 firstMove)
     if (firstMove)
     {
         sLearningMoveTableID = 0;
+        sLearningMoveTableTableID = 0;
 
         while ((gLevelUpLearnsets[species][sLearningMoveTableID] & LEVEL_UP_MOVE_LV) != (level << 9))
         {
             sLearningMoveTableID++;
             if (gLevelUpLearnsets[species][sLearningMoveTableID] == LEVEL_UP_END)
-                return MOVE_NONE;
+                noMoveFound = 1;
+                break;
+        }
+
+        if (noMoveFound) {
+            sLearningMoveTableID = 0;
+            sLearningMoveTableTableID = 1;
+            noMoveFound = 0;
+            while ((gLevelUpTypeLearnsets[type1][sLearningMoveTableID] & LEVEL_UP_MOVE_LV) != (level << 9))
+            {
+                sLearningMoveTableID++;
+                if (gLevelUpTypeLearnsets[type1][sLearningMoveTableID] == LEVEL_UP_END)
+                    noMoveFound = 1;
+                    break;
+            }
+        }
+
+        if (noMoveFound && type2 != type1){
+            sLearningMoveTableID = 0;
+            sLearningMoveTableTableID = 2;
+            noMoveFound = 0;
+            while ((gLevelUpTypeLearnsets[type2][sLearningMoveTableID] & LEVEL_UP_MOVE_LV) != (level << 9))
+            {
+                sLearningMoveTableID++;
+                if (gLevelUpTypeLearnsets[type2][sLearningMoveTableID] == LEVEL_UP_END)
+                    noMoveFound = 1;
+                    break;
+            }
+        }
+        
+        if (noMoveFound)
+            return MOVE_NONE;
+    }
+
+    if (sLearningMoveTableTableID == 0){
+        if ((gLevelUpLearnsets[species][sLearningMoveTableID] & LEVEL_UP_MOVE_LV) == (level << 9))
+        {
+            gMoveToLearn = (gLevelUpLearnsets[species][sLearningMoveTableID] & LEVEL_UP_MOVE_ID);
+            sLearningMoveTableID++;
+            retVal = GiveMoveToMon(mon, gMoveToLearn);
+        } 
+        else {
+            sLearningMoveTableTableID = 1;
+            sLearningMoveTableID = 0;
+        }
+    }
+    
+    if (sLearningMoveTableTableID == 1){
+        if (gLevelUpTypeLearnsets[type1][sLearningMoveTableID] == LEVEL_UP_END){
+            sLearningMoveTableTableID = 2;
+            sLearningMoveTableID = 0;
+        }
+        else {
+            while ((gLevelUpTypeLearnsets[type1][sLearningMoveTableID] & LEVEL_UP_MOVE_LV) != (level << 9))
+            {
+                sLearningMoveTableID++;
+                if (gLevelUpTypeLearnsets[type1][sLearningMoveTableID] == LEVEL_UP_END)
+                    break;
+            }
+
+            if ((gLevelUpTypeLearnsets[type1][sLearningMoveTableID] & LEVEL_UP_MOVE_LV) == (level << 9))
+            {
+                gMoveToLearn = (gLevelUpTypeLearnsets[type1][sLearningMoveTableID] & LEVEL_UP_MOVE_ID);
+                sLearningMoveTableID++;
+                retVal = GiveMoveToMon(mon, gMoveToLearn);
+            }
+            else {
+                sLearningMoveTableTableID = 2;
+                sLearningMoveTableID = 0;
+            }
         }
     }
 
-    if ((gLevelUpLearnsets[species][sLearningMoveTableID] & LEVEL_UP_MOVE_LV) == (level << 9))
-    {
-        gMoveToLearn = (gLevelUpLearnsets[species][sLearningMoveTableID] & LEVEL_UP_MOVE_ID);
-        sLearningMoveTableID++;
-        retVal = GiveMoveToMon(mon, gMoveToLearn);
+    if (sLearningMoveTableTableID == 2 && type2 != type1){
+        if (gLevelUpTypeLearnsets[type2][sLearningMoveTableID] == LEVEL_UP_END){
+            sLearningMoveTableTableID = 2;
+            sLearningMoveTableID = 0;
+        }
+        else {
+            while ((gLevelUpTypeLearnsets[type2][sLearningMoveTableID] & LEVEL_UP_MOVE_LV) != (level << 9))
+            {
+                sLearningMoveTableID++;
+                if (gLevelUpTypeLearnsets[type2][sLearningMoveTableID] == LEVEL_UP_END)
+                    break;
+            }
+
+            if ((gLevelUpTypeLearnsets[type2][sLearningMoveTableID] & LEVEL_UP_MOVE_LV) == (level << 9))
+            {
+                gMoveToLearn = (gLevelUpTypeLearnsets[type2][sLearningMoveTableID] & LEVEL_UP_MOVE_ID);
+                sLearningMoveTableID++;
+                retVal = GiveMoveToMon(mon, gMoveToLearn);
+            }
+        }
     }
 
     return retVal;
@@ -5544,7 +5667,7 @@ static u16 ModifyStatsWithRandomPerturbance(u16 stat, u8 statIndex, u32 personal
     u32 retVal;
     u32 randVal = personality;
     u32 multiplier;
-    u32 deviance;
+    s32 deviance;
     u32 pos_variance = 30; // allow stats to be up to 30% improved
     u32 neg_variance = 15; // allow stats to be at most 15% dropped
     u8 i;
@@ -5553,18 +5676,33 @@ static u16 ModifyStatsWithRandomPerturbance(u16 stat, u8 statIndex, u32 personal
     if (statIndex > NUM_NATURE_STATS)
         return stat;
 
-    for(i = 0; i < (statIndex + 1); i++){
-        randVal = SeededRandom(randVal);  // seed the random value with the personality value and then cycle by index
-    }
-
     // generate a deviance between -15% and +30%
-    deviance = (randVal % (pos_variance + neg_variance + 1)) - neg_variance;
+    deviance = GetStatModifierDevianceVal(statIndex, personality);
     multiplier = deviance + 100;
 
     retVal = stat * multiplier;
     retVal /= 100;
 
     return retVal;
+}
+
+s32 GetStatModifierDevianceVal(u8 statIndex, u32 personality)
+{
+    // Generate a random perturbance of the pokemon's stats via their personality value
+    u32 randVal = personality;
+    u32 pos_variance = 30; // allow stats to be up to 30% improved
+    u32 neg_variance = 15; // allow stats to be at most 15% dropped
+    u32 deviance;
+    u8 i;
+
+    for(i = 0; i < (statIndex + 1); i++){
+        randVal = SeededRandom(randVal);  // seed the random value with the personality value and then cycle by index
+    }
+
+    // generate a deviance between -15% and +30%
+    deviance = (randVal % (pos_variance + neg_variance + 1)) - neg_variance;
+
+    return deviance;
 }
 
 void AdjustFriendship(struct Pokemon *mon, u8 event)
@@ -5875,6 +6013,8 @@ u8 GetMoveRelearnerMoves(struct Pokemon *mon, u16 *moves)
     u8 numMoves = 0;
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
     u8 level = GetMonData(mon, MON_DATA_LEVEL, NULL);
+    u8 type1 = DeriveDynamicTyping(gSpeciesInfo[species].types[0], gSpeciesInfo[species].types[1], GetMonData(mon, MON_DATA_PERSONALITY, NULL), 1);
+    u8 type2 = DeriveDynamicTyping(gSpeciesInfo[species].types[0], gSpeciesInfo[species].types[1], GetMonData(mon, MON_DATA_PERSONALITY, NULL), 0);
     int i, j, k;
 
     for (i = 0; i < MAX_MON_MOVES; i++)
@@ -5926,6 +6066,8 @@ u8 GetNumberOfRelearnableMoves(struct Pokemon *mon)
     u8 numMoves = 0;
     u16 species = GetMonData(mon, MON_DATA_SPECIES_OR_EGG, NULL);
     u8 level = GetMonData(mon, MON_DATA_LEVEL, NULL);
+    u8 type1 = DeriveDynamicTyping(gSpeciesInfo[species].types[0], gSpeciesInfo[species].types[1], GetMonData(mon, MON_DATA_PERSONALITY, NULL), 1);
+    u8 type2 = DeriveDynamicTyping(gSpeciesInfo[species].types[0], gSpeciesInfo[species].types[1], GetMonData(mon, MON_DATA_PERSONALITY, NULL), 0);
     int i, j, k;
 
     if (species == SPECIES_EGG)

@@ -2061,7 +2061,7 @@ BattleScript_ButItFailed::
 
 BattleScript_ButItFailedUTurn::
 	pause B_WAIT_TIME_SHORT
-	orbyte gMoveResultFlags, MOVE_RESULT_FAILED
+	orbyte gMoveResultFlags, 0
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
 
