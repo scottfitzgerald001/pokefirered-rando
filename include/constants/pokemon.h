@@ -114,6 +114,25 @@
 #define TYPE_DARK           17
 #define NUMBER_OF_MON_TYPES 18
 
+// Dynamic Type Thresholds
+#define TYPE_NORMAL_THRESHOLD           150
+#define TYPE_FIGHTING_THRESHOLD         300
+#define TYPE_FLYING_THRESHOLD           450
+#define TYPE_POISON_THRESHOLD           600
+#define TYPE_GROUND_THRESHOLD           750
+#define TYPE_ROCK_THRESHOLD             900
+#define TYPE_BUG_THRESHOLD              1050
+#define TYPE_GHOST_THRESHOLD            1200
+#define TYPE_STEEL_THRESHOLD            1350
+#define TYPE_FIRE_THRESHOLD             1500
+#define TYPE_WATER_THRESHOLD            1650
+#define TYPE_GRASS_THRESHOLD            1800
+#define TYPE_ELECTRIC_THRESHOLD         1950
+#define TYPE_PSYCHIC_THRESHOLD          2100
+#define TYPE_ICE_THRESHOLD              2250
+#define TYPE_DRAGON_THRESHOLD           2400
+#define TYPE_DARK_THRESHOLD             2550
+
 // Pokemon egg groups
 #define EGG_GROUP_NONE         0
 #define EGG_GROUP_MONSTER      1
@@ -182,7 +201,7 @@
 #define MAX_STAT_STAGE    12
 
 // Shiny odds
-#define SHINY_ODDS 4096 // Actual probability is SHINY_ODDS/65536 (roughly 6% chance)
+#define SHINY_ODDS 2048 // Actual probability is SHINY_ODDS/65536 (roughly 3% chance)
 
 #define MAX_LEVEL 100
 
@@ -206,7 +225,7 @@
 #define LEVEL_UP_MOVE_LV   0xFE00
 #define LEVEL_UP_END       0xFFFF
 
-#define MAX_LEVEL_UP_MOVES       20
+#define MAX_LEVEL_UP_MOVES       40
 
 #define MON_MALE       0x00
 #define MON_FEMALE     0xFE

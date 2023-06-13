@@ -1537,6 +1537,8 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
 {
     u32 nameHash = 0;
     u32 personalityValue;
+    u32 personalityMod;
+    u32 personalityCustom;
     u8 fixedIV;
     s32 i, j;
 
@@ -1569,10 +1571,32 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
                 for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
                     nameHash += gSpeciesNames[partyData[i].species][j];
 
-                personalityValue += nameHash << 8;
+                //personalityValue += nameHash << 8;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
-                break;
+                personalityValue = Random32();
+                if (partyData[i].personalityShort) {
+                    personalityCustom = (0x0000FFFF & partyData[i].personalityShort);
+                    
+                    if (personalityValue >= 0xFFFFFFFF - TYPE_DARK_THRESHOLD) {
+                        personalityValue -= TYPE_DARK_THRESHOLD; // adjust if we are close to overflowing
+                    }
+                    else if (personalityValue <= TYPE_DARK_THRESHOLD) {
+                        personalityValue += TYPE_DARK_THRESHOLD; // adjust if we are close to underflowing
+                    }
+
+                    personalityMod = personalityValue % TYPE_DARK_THRESHOLD;
+                    if (personalityMod < personalityCustom){
+                        personalityValue += (personalityCustom - personalityMod);
+                    }
+                    else {
+                        personalityValue -= (personalityMod - personalityCustom);
+                    }
+                }
+                if (partyData[i].statMultipliers == 0)
+                    CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+                else 
+                    CreateMonWithSetStatMultipliers(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0, partyData[i].statMultipliers);
+
             }
             case F_TRAINER_PARTY_CUSTOM_MOVESET:
             {
@@ -1581,9 +1605,32 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
                 for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
                     nameHash += gSpeciesNames[partyData[i].species][j];
 
-                personalityValue += nameHash << 8;
+                //personalityValue += nameHash << 8;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+                personalityValue = Random32();
+                if (partyData[i].personalityShort) {
+                    personalityCustom = (0x0000FFFF & partyData[i].personalityShort);
+                    
+                    if (personalityValue >= 0xFFFFFFFF - TYPE_DARK_THRESHOLD) {
+                        personalityValue -= TYPE_DARK_THRESHOLD; // adjust if we are close to overflowing
+                    }
+                    else if (personalityValue <= TYPE_DARK_THRESHOLD) {
+                        personalityValue += TYPE_DARK_THRESHOLD; // adjust if we are close to underflowing
+                    }
+
+                    personalityMod = personalityValue % TYPE_DARK_THRESHOLD;
+                    if (personalityMod < personalityCustom){
+                        personalityValue += (personalityCustom - personalityMod);
+                    }
+                    else {
+                        personalityValue -= (personalityMod - personalityCustom);
+                    }
+                }
+                if (partyData[i].statMultipliers == 0) //
+                    CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+                else 
+                    CreateMonWithSetStatMultipliers(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0, partyData[i].statMultipliers);
+
 
                 for (j = 0; j < MAX_MON_MOVES; j++)
                 {
@@ -1599,9 +1646,31 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
                 for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
                     nameHash += gSpeciesNames[partyData[i].species][j];
 
-                personalityValue += nameHash << 8;
+                //personalityValue += nameHash << 8;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+                personalityValue = Random32();
+                if (partyData[i].personalityShort) {
+                    personalityCustom = (0x0000FFFF & partyData[i].personalityShort);
+                    
+                    if (personalityValue >= 0xFFFFFFFF - TYPE_DARK_THRESHOLD) {
+                        personalityValue -= TYPE_DARK_THRESHOLD; // adjust if we are close to overflowing
+                    }
+                    else if (personalityValue <= TYPE_DARK_THRESHOLD) {
+                        personalityValue += TYPE_DARK_THRESHOLD; // adjust if we are close to underflowing
+                    }
+
+                    personalityMod = personalityValue % TYPE_DARK_THRESHOLD;
+                    if (personalityMod < personalityCustom){
+                        personalityValue += (personalityCustom - personalityMod);
+                    }
+                    else {
+                        personalityValue -= (personalityMod - personalityCustom);
+                    }
+                }
+                if (partyData[i].statMultipliers == 0)
+                    CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+                else 
+                    CreateMonWithSetStatMultipliers(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0, partyData[i].statMultipliers);
 
                 SetMonData(&party[i], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
                 break;
@@ -1613,9 +1682,32 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
                 for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
                     nameHash += gSpeciesNames[partyData[i].species][j];
 
-                personalityValue += nameHash << 8;
+                //personalityValue += nameHash << 8;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+                personalityValue = Random32();
+                if (partyData[i].personalityShort) {
+                    personalityCustom = (0x0000FFFF & partyData[i].personalityShort);
+                    
+                    if (personalityValue >= 0xFFFFFFFF - TYPE_DARK_THRESHOLD) {
+                        personalityValue -= TYPE_DARK_THRESHOLD; // adjust if we are close to overflowing
+                    }
+                    else if (personalityValue <= TYPE_DARK_THRESHOLD) {
+                        personalityValue += TYPE_DARK_THRESHOLD; // adjust if we are close to underflowing
+                    }
+
+                    personalityMod = personalityValue % TYPE_DARK_THRESHOLD;
+                    if (personalityMod < personalityCustom){
+                        personalityValue += (personalityCustom - personalityMod);
+                    }
+                    else {
+                        personalityValue -= (personalityMod - personalityCustom);
+                    }
+                }
+                if (partyData[i].statMultipliers == 0)
+                    CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+                else 
+                    CreateMonWithSetStatMultipliers(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0, partyData[i].statMultipliers);
+
                 SetMonData(&party[i], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
 
                 for (j = 0; j < MAX_MON_MOVES; j++)

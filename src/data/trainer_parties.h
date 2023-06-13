@@ -21,6 +21,10 @@
         .species = SPECIES_STARMIE, \
     }
 
+#define MODIFY_FIRST_TYPE       150  // Subtract this from the threshold of the desired type
+#define MODIFY_SECOND_TYPE      100  // Subtract this from the threshold of the desired type
+#define GIVE_SECOND_ABILITY     25   // Add this to the personalityShort to modulate to the secondary ability
+
 static const struct TrainerMonNoItemDefaultMoves sParty_AquaLeader[] = {DUMMY_TRAINER_MON};
 static const struct TrainerMonNoItemDefaultMoves sParty_AquaGruntM[] = {DUMMY_TRAINER_MON};
 static const struct TrainerMonNoItemDefaultMoves sParty_AquaGruntF[] = {DUMMY_TRAINER_MON};
@@ -3717,72 +3721,94 @@ static const struct TrainerMonItemDefaultMoves sParty_BlackBeltDaisuke[] = {
     },
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_RivalOaksLabSquirtle[] = {
+static const struct TrainerMonNoItemCustomMoves sParty_RivalOaksLabSquirtle[] = {
     {
         .iv = 0,
         .lvl = 5,
         .species = SPECIES_SQUIRTLE,
+        .moves = {MOVE_TACKLE, MOVE_TAIL_WHIP, MOVE_NONE, MOVE_NONE},
+        .personalityShort = TYPE_STEEL_THRESHOLD - MODIFY_SECOND_TYPE + NATURE_MODEST,
+        .statMultipliers = ((STAT_NO_MOD - 10) << ATK_OFFSET) | ((STAT_NO_MOD - 10) << DEF_OFFSET) | ((STAT_NO_MOD - 10) << SPA_OFFSET) | ((STAT_NO_MOD - 10) << SPD_OFFSET) | ((STAT_NO_MOD - 10) << SPE_OFFSET),
     },
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_RivalOaksLabBulbasaur[] = {
+static const struct TrainerMonNoItemCustomMoves sParty_RivalOaksLabBulbasaur[] = {
     {
         .iv = 0,
         .lvl = 5,
         .species = SPECIES_BULBASAUR,
+        .moves = {MOVE_TACKLE, MOVE_GROWL, MOVE_NONE, MOVE_NONE},
+        .personalityShort = TYPE_STEEL_THRESHOLD - MODIFY_SECOND_TYPE + NATURE_MODEST,
+        .statMultipliers = ((STAT_NO_MOD - 10) << ATK_OFFSET) | ((STAT_NO_MOD - 10) << DEF_OFFSET) | ((STAT_NO_MOD - 10) << SPA_OFFSET) | ((STAT_NO_MOD - 10) << SPD_OFFSET) | ((STAT_NO_MOD - 10) << SPE_OFFSET),
     },
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_RivalOaksLabCharmander[] = {
+static const struct TrainerMonNoItemCustomMoves sParty_RivalOaksLabCharmander[] = {
+    // This charmander needs less nerfing than the other starters since its not getting a type that resists normal
     {
         .iv = 0,
         .lvl = 5,
         .species = SPECIES_CHARMANDER,
+        .moves = {MOVE_SCRATCH, MOVE_GROWL, MOVE_NONE, MOVE_NONE},
+        .personalityShort = TYPE_DRAGON_THRESHOLD - MODIFY_SECOND_TYPE + NATURE_MODEST,
+        .statMultipliers = (STAT_NO_MOD << ATK_OFFSET) | (STAT_NO_MOD << DEF_OFFSET) | (STAT_NO_MOD << SPA_OFFSET) | (STAT_NO_MOD << SPD_OFFSET) | (STAT_NO_MOD << SPE_OFFSET),
     },
 };
 
 static const struct TrainerMonNoItemCustomMoves sParty_RivalRoute22EarlySquirtle[] = {
     {
         .iv = 50,
-        .lvl = 9,
+        .lvl = 8,
         .species = SPECIES_PIDGEY,
-        .moves = {MOVE_TACKLE, MOVE_SAND_ATTACK, MOVE_NONE, MOVE_NONE},
+        .moves = {MOVE_TACKLE, MOVE_MUD_SLAP, MOVE_GUST, MOVE_NONE},
+        .personalityShort = TYPE_GROUND_THRESHOLD - MODIFY_SECOND_TYPE + NATURE_RASH,
+        .statMultipliers = (STAT_NO_MOD << ATK_OFFSET) | ((STAT_NO_MOD + 10) << DEF_OFFSET) | ((STAT_NO_MOD + 15) << SPA_OFFSET) | (STAT_NO_MOD << SPD_OFFSET) | ((STAT_NO_MOD + 15) << SPE_OFFSET),
     },
     {
         .iv = 50,
-        .lvl = 9,
+        .lvl = 11,
         .species = SPECIES_SQUIRTLE,
-        .moves = {MOVE_TACKLE, MOVE_TAIL_WHIP, MOVE_NONE, MOVE_NONE},
+        .moves = {MOVE_TACKLE, MOVE_WITHDRAW, MOVE_WATER_GUN, MOVE_METAL_CLAW},
+        .personalityShort = TYPE_STEEL_THRESHOLD - MODIFY_SECOND_TYPE + NATURE_LONELY,
+        .statMultipliers = ((STAT_NO_MOD + 5) << ATK_OFFSET) | ((STAT_NO_MOD + 15) << DEF_OFFSET) | ((STAT_NO_MOD + 15) << SPA_OFFSET) | ((STAT_NO_MOD + 15) << SPD_OFFSET) | (STAT_NO_MOD << SPE_OFFSET),
     },
 };
 
 static const struct TrainerMonNoItemCustomMoves sParty_RivalRoute22EarlyBulbasaur[] = {
     {
         .iv = 50,
-        .lvl = 9,
+        .lvl = 8,
         .species = SPECIES_PIDGEY,
-        .moves = {MOVE_TACKLE, MOVE_SAND_ATTACK, MOVE_NONE, MOVE_NONE},
+        .moves = {MOVE_TACKLE, MOVE_THUNDER_WAVE, MOVE_GUST, MOVE_THUNDER_SHOCK},
+        .personalityShort = TYPE_ELECTRIC_THRESHOLD - MODIFY_SECOND_TYPE + NATURE_RASH,
+        .statMultipliers = (STAT_NO_MOD << ATK_OFFSET) | ((STAT_NO_MOD + 10) << DEF_OFFSET) | ((STAT_NO_MOD + 15) << SPA_OFFSET) | (STAT_NO_MOD << SPD_OFFSET) | ((STAT_NO_MOD + 15) << SPE_OFFSET),
     },
     {
         .iv = 50,
-        .lvl = 9,
+        .lvl = 11,
         .species = SPECIES_BULBASAUR,
-        .moves = {MOVE_TACKLE, MOVE_GROWL, MOVE_NONE, MOVE_NONE},
+        .moves = {MOVE_TACKLE, MOVE_GROWL, MOVE_VINE_WHIP, MOVE_METAL_CLAW},
+        .personalityShort = TYPE_STEEL_THRESHOLD - MODIFY_SECOND_TYPE + NATURE_LONELY,
+        .statMultipliers = ((STAT_NO_MOD + 15) << ATK_OFFSET) | ((STAT_NO_MOD + 10) << DEF_OFFSET) | (STAT_NO_MOD << SPA_OFFSET) | ((STAT_NO_MOD + 10) << SPD_OFFSET) | (STAT_NO_MOD << SPE_OFFSET),
     },
 };
 
 static const struct TrainerMonNoItemCustomMoves sParty_RivalRoute22EarlyCharmander[] = {
     {
         .iv = 50,
-        .lvl = 9,
+        .lvl = 8,
         .species = SPECIES_PIDGEY,
-        .moves = {MOVE_TACKLE, MOVE_SAND_ATTACK, MOVE_NONE, MOVE_NONE},
+        .moves = {MOVE_TACKLE, MOVE_SAND_ATTACK, MOVE_GUST, MOVE_METAL_CLAW},
+        .personalityShort = TYPE_STEEL_THRESHOLD - MODIFY_SECOND_TYPE + NATURE_LONELY,
+        .statMultipliers = ((STAT_NO_MOD + 10) << ATK_OFFSET) | ((STAT_NO_MOD + 10) << DEF_OFFSET) | ((STAT_NO_MOD + 5) << SPA_OFFSET) | (STAT_NO_MOD << SPD_OFFSET) | (STAT_NO_MOD << SPE_OFFSET),
     },
     {
         .iv = 50,
-        .lvl = 9,
+        .lvl = 11,
         .species = SPECIES_CHARMANDER,
-        .moves = {MOVE_SCRATCH, MOVE_GROWL, MOVE_NONE, MOVE_NONE},
+        .moves = {MOVE_SCRATCH, MOVE_GROWL, MOVE_EMBER, MOVE_TWISTER},
+        .personalityShort = TYPE_DRAGON_THRESHOLD - MODIFY_SECOND_TYPE + NATURE_RASH,
+        .statMultipliers = ((STAT_NO_MOD + 15) << ATK_OFFSET) | ((STAT_NO_MOD + 5) << DEF_OFFSET) | ((STAT_NO_MOD + 20) << SPA_OFFSET) | ((STAT_NO_MOD + 5) << SPD_OFFSET) | (STAT_NO_MOD << SPE_OFFSET),
     },
 };
 

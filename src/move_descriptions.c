@@ -713,4 +713,9 @@ const u8 *const gMoveDescriptionPointers[MOVES_COUNT - 1] = {
     [MOVE_DOOM_DESIRE   - 1] = gMoveDescription_DoomDesire,
     [MOVE_PSYCHO_BOOST  - 1] = gMoveDescription_PsychoBoost,
     [MOVE_U_TURN        - 1] = gMoveDescription_UTurn,
+    [MOVE_AQUA_JET      - 1] = gMoveDescription_QuickAttack,
+    [MOVE_BULLET_PUNCH  - 1] = gMoveDescription_QuickAttack,
+    [MOVE_ICE_SHARD     - 1] = gMoveDescription_QuickAttack,
+    [MOVE_SHADOW_SNEAK  - 1] = gMoveDescription_QuickAttack,
+    [MOVE_VACUUM_WAVE   - 1] = gMoveDescription_QuickAttack,
 };
