@@ -6,7 +6,7 @@ static const u16 sNormalTypeLevelUpLearnset[] = {
     LEVEL_UP_END
 };
 static const u16 sFightingTypeLevelUpLearnset[] = {
-    LEVEL_UP_MOVE(5, MOVE_DOUBLE_KICK),
+    LEVEL_UP_MOVE(7, MOVE_DOUBLE_KICK),
     LEVEL_UP_END
 };
 static const u16 sFlyingTypeLevelUpLearnset[] = {
@@ -14,7 +14,7 @@ static const u16 sFlyingTypeLevelUpLearnset[] = {
     LEVEL_UP_END
 };
 static const u16 sPoisonTypeLevelUpLearnset[] = {
-    LEVEL_UP_MOVE(5, MOVE_POISON_STING),
+    LEVEL_UP_MOVE(3, MOVE_POISON_STING),
     LEVEL_UP_END
 };
 static const u16 sGroundTypeLevelUpLearnset[] = {
@@ -22,7 +22,7 @@ static const u16 sGroundTypeLevelUpLearnset[] = {
     LEVEL_UP_END
 };
 static const u16 sRockTypeLevelUpLearnset[] = {
-    LEVEL_UP_MOVE(5, MOVE_ROCK_THROW),
+    LEVEL_UP_MOVE(8, MOVE_ROCK_THROW),
     LEVEL_UP_END
 };
 static const u16 sBugTypeLevelUpLearnset[] = {
@@ -30,34 +30,38 @@ static const u16 sBugTypeLevelUpLearnset[] = {
     LEVEL_UP_END
 };
 static const u16 sGhostTypeLevelUpLearnset[] = {
-    LEVEL_UP_MOVE(5, MOVE_LICK),
+    LEVEL_UP_MOVE(3, MOVE_LICK),
     LEVEL_UP_END
 };
 static const u16 sSteelTypeLevelUpLearnset[] = {
-    LEVEL_UP_MOVE(5, MOVE_METAL_CLAW),
+    LEVEL_UP_MOVE(7, MOVE_METAL_CLAW),
     LEVEL_UP_END
 };
-static const u16 sMysteryTypeLevelUpLearnset[] = {
-    LEVEL_UP_END
+static const u16 sMysteryTypeLevelUpLearnset[] = { // this is used when no type change has occured
+    LEVEL_UP_MOVE(5, MOVE_QUICK_ATTACK),
+    LEVEL_UP_END 
 };
 static const u16 sFireTypeLevelUpLearnset[] = {
     LEVEL_UP_MOVE(5, MOVE_EMBER),
     LEVEL_UP_END
 };
 static const u16 sWaterTypeLevelUpLearnset[] = {
-    LEVEL_UP_MOVE(5, MOVE_BUBBLE),
+    LEVEL_UP_MOVE(4, MOVE_BUBBLE),
+    LEVEL_UP_MOVE(8, MOVE_WATER_GUN),
     LEVEL_UP_END
 };
 static const u16 sGrassTypeLevelUpLearnset[] = {
-    LEVEL_UP_MOVE(5, MOVE_VINE_WHIP),
+    LEVEL_UP_MOVE(4, MOVE_ABSORB),
+    LEVEL_UP_MOVE(9, MOVE_VINE_WHIP),
     LEVEL_UP_END
 };
 static const u16 sElectricTypeLevelUpLearnset[] = {
     LEVEL_UP_MOVE(5, MOVE_THUNDER_SHOCK),
+    LEVEL_UP_MOVE(12, MOVE_THUNDER_WAVE),
     LEVEL_UP_END
 };
 static const u16 sPsychicTypeLevelUpLearnset[] = {
-    LEVEL_UP_MOVE(5, MOVE_CONFUSION),
+    LEVEL_UP_MOVE(7, MOVE_CONFUSION),
     LEVEL_UP_END
 };
 static const u16 sIceTypeLevelUpLearnset[] = {
@@ -65,11 +69,11 @@ static const u16 sIceTypeLevelUpLearnset[] = {
     LEVEL_UP_END
 };
 static const u16 sDragonTypeLevelUpLearnset[] = {
-    LEVEL_UP_MOVE(5, MOVE_TWISTER),
+    LEVEL_UP_MOVE(6, MOVE_TWISTER),
     LEVEL_UP_END
 };
 static const u16 sDarkTypeLevelUpLearnset[] = {
-    LEVEL_UP_MOVE(5, MOVE_PURSUIT),
+    LEVEL_UP_MOVE(5, MOVE_THIEF),
     LEVEL_UP_END
 };
 
@@ -84,7 +88,9 @@ static const u16 sBulbasaurLevelUpLearnset[] = {
     LEVEL_UP_MOVE(25, MOVE_SWEET_SCENT),
     LEVEL_UP_MOVE(32, MOVE_GROWTH),
     LEVEL_UP_MOVE(39, MOVE_SYNTHESIS),
+    LEVEL_UP_MOVE(42, MOVE_PETAL_DANCE),
     LEVEL_UP_MOVE(46, MOVE_SOLAR_BEAM),
+    // LEAF STORM? POWER WHIP?
     LEVEL_UP_END
 };
 
@@ -101,6 +107,7 @@ static const u16 sIvysaurLevelUpLearnset[] = {
     LEVEL_UP_MOVE(29, MOVE_SWEET_SCENT),
     LEVEL_UP_MOVE(38, MOVE_GROWTH),
     LEVEL_UP_MOVE(47, MOVE_SYNTHESIS),
+    LEVEL_UP_MOVE(52, MOVE_PETAL_DANCE),
     LEVEL_UP_MOVE(56, MOVE_SOLAR_BEAM),
     LEVEL_UP_END
 };
@@ -119,6 +126,7 @@ static const u16 sVenusaurLevelUpLearnset[] = {
     LEVEL_UP_MOVE(29, MOVE_SWEET_SCENT),
     LEVEL_UP_MOVE(41, MOVE_GROWTH),
     LEVEL_UP_MOVE(53, MOVE_SYNTHESIS),
+    LEVEL_UP_MOVE(58, MOVE_PETAL_DANCE),
     LEVEL_UP_MOVE(65, MOVE_SOLAR_BEAM),
     LEVEL_UP_END
 };
@@ -129,10 +137,10 @@ static const u16 sCharmanderLevelUpLearnset[] = {
     LEVEL_UP_MOVE(7, MOVE_EMBER),
     LEVEL_UP_MOVE(13, MOVE_METAL_CLAW),
     LEVEL_UP_MOVE(19, MOVE_SMOKESCREEN),
-    LEVEL_UP_MOVE(25, MOVE_SCARY_FACE),
+    LEVEL_UP_MOVE(23, MOVE_DRAGON_RAGE),
+    LEVEL_UP_MOVE(26, MOVE_SCARY_FACE),
     LEVEL_UP_MOVE(31, MOVE_FLAMETHROWER),
     LEVEL_UP_MOVE(37, MOVE_SLASH),
-    LEVEL_UP_MOVE(43, MOVE_DRAGON_RAGE),
     LEVEL_UP_MOVE(49, MOVE_FIRE_SPIN),
     LEVEL_UP_END
 };
@@ -144,16 +152,15 @@ static const u16 sCharmeleonLevelUpLearnset[] = {
     LEVEL_UP_MOVE(7, MOVE_EMBER),
     LEVEL_UP_MOVE(13, MOVE_METAL_CLAW),
     LEVEL_UP_MOVE(20, MOVE_SMOKESCREEN),
-    LEVEL_UP_MOVE(27, MOVE_SCARY_FACE),
+    LEVEL_UP_MOVE(25, MOVE_DRAGON_RAGE),
+    LEVEL_UP_MOVE(29, MOVE_SCARY_FACE),
     LEVEL_UP_MOVE(34, MOVE_FLAMETHROWER),
     LEVEL_UP_MOVE(41, MOVE_SLASH),
-    LEVEL_UP_MOVE(48, MOVE_DRAGON_RAGE),
     LEVEL_UP_MOVE(55, MOVE_FIRE_SPIN),
     LEVEL_UP_END
 };
 
 static const u16 sCharizardLevelUpLearnset[] = {
-    LEVEL_UP_MOVE(1, MOVE_HEAT_WAVE),
     LEVEL_UP_MOVE(1, MOVE_SCRATCH),
     LEVEL_UP_MOVE(1, MOVE_GROWL),
     LEVEL_UP_MOVE(1, MOVE_EMBER),
@@ -161,11 +168,12 @@ static const u16 sCharizardLevelUpLearnset[] = {
     LEVEL_UP_MOVE(7, MOVE_EMBER),
     LEVEL_UP_MOVE(13, MOVE_METAL_CLAW),
     LEVEL_UP_MOVE(20, MOVE_SMOKESCREEN),
-    LEVEL_UP_MOVE(27, MOVE_SCARY_FACE),
+    LEVEL_UP_MOVE(25, MOVE_DRAGON_RAGE),
+    LEVEL_UP_MOVE(29, MOVE_SCARY_FACE),
     LEVEL_UP_MOVE(34, MOVE_FLAMETHROWER),
     LEVEL_UP_MOVE(36, MOVE_WING_ATTACK),
     LEVEL_UP_MOVE(44, MOVE_SLASH),
-    LEVEL_UP_MOVE(54, MOVE_DRAGON_RAGE),
+    LEVEL_UP_MOVE(50, MOVE_HEAT_WAVE),
     LEVEL_UP_MOVE(64, MOVE_FIRE_SPIN),
     LEVEL_UP_END
 };
@@ -176,8 +184,9 @@ static const u16 sSquirtleLevelUpLearnset[] = {
     LEVEL_UP_MOVE(7, MOVE_BUBBLE),
     LEVEL_UP_MOVE(10, MOVE_WITHDRAW),
     LEVEL_UP_MOVE(13, MOVE_WATER_GUN),
-    LEVEL_UP_MOVE(18, MOVE_BITE),
-    LEVEL_UP_MOVE(23, MOVE_RAPID_SPIN),
+    LEVEL_UP_MOVE(17, MOVE_BITE),
+    LEVEL_UP_MOVE(20, MOVE_RAPID_SPIN),
+    LEVEL_UP_MOVE(24, MOVE_WATER_PULSE),
     LEVEL_UP_MOVE(28, MOVE_PROTECT),
     LEVEL_UP_MOVE(33, MOVE_RAIN_DANCE),
     LEVEL_UP_MOVE(40, MOVE_SKULL_BASH),
@@ -194,7 +203,8 @@ static const u16 sWartortleLevelUpLearnset[] = {
     LEVEL_UP_MOVE(10, MOVE_WITHDRAW),
     LEVEL_UP_MOVE(13, MOVE_WATER_GUN),
     LEVEL_UP_MOVE(19, MOVE_BITE),
-    LEVEL_UP_MOVE(25, MOVE_RAPID_SPIN),
+    LEVEL_UP_MOVE(23, MOVE_RAPID_SPIN),
+    LEVEL_UP_MOVE(27, MOVE_WATER_PULSE),
     LEVEL_UP_MOVE(31, MOVE_PROTECT),
     LEVEL_UP_MOVE(37, MOVE_RAIN_DANCE),
     LEVEL_UP_MOVE(45, MOVE_SKULL_BASH),
@@ -213,6 +223,7 @@ static const u16 sBlastoiseLevelUpLearnset[] = {
     LEVEL_UP_MOVE(13, MOVE_WATER_GUN),
     LEVEL_UP_MOVE(19, MOVE_BITE),
     LEVEL_UP_MOVE(25, MOVE_RAPID_SPIN),
+    LEVEL_UP_MOVE(28, MOVE_WATER_PULSE),
     LEVEL_UP_MOVE(31, MOVE_PROTECT),
     LEVEL_UP_MOVE(42, MOVE_RAIN_DANCE),
     LEVEL_UP_MOVE(55, MOVE_SKULL_BASH),
@@ -317,11 +328,15 @@ static const u16 sPidgeotLevelUpLearnset[] = {
 };
 
 static const u16 sRattataLevelUpLearnset[] = {
-    LEVEL_UP_MOVE(1, MOVE_TACKLE),
-    LEVEL_UP_MOVE(1, MOVE_TAIL_WHIP),
-    LEVEL_UP_MOVE(3, MOVE_U_TURN),
-    LEVEL_UP_MOVE(4, MOVE_SILVER_WIND),
-    LEVEL_UP_MOVE(7, MOVE_QUICK_ATTACK),
+    //LEVEL_UP_MOVE(1, MOVE_TACKLE),
+    //LEVEL_UP_MOVE(1, MOVE_TAIL_WHIP),
+    LEVEL_UP_MOVE(1, MOVE_U_TURN),
+    LEVEL_UP_MOVE(5, MOVE_SHADOW_SNEAK),
+    LEVEL_UP_MOVE(5, MOVE_VACUUM_WAVE),
+    LEVEL_UP_MOVE(6, MOVE_AQUA_JET),
+    LEVEL_UP_MOVE(6, MOVE_ICE_SHARD),    
+    LEVEL_UP_MOVE(6, MOVE_BULLET_PUNCH),
+    //LEVEL_UP_MOVE(7, MOVE_QUICK_ATTACK),
     LEVEL_UP_MOVE(13, MOVE_HYPER_FANG),
     LEVEL_UP_MOVE(20, MOVE_FOCUS_ENERGY),
     LEVEL_UP_MOVE(27, MOVE_PURSUIT),

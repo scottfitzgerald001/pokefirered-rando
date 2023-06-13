@@ -2059,12 +2059,6 @@ BattleScript_ButItFailed::
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
 
-BattleScript_ButItFailedUTurn::
-	pause B_WAIT_TIME_SHORT
-	orbyte gMoveResultFlags, 0
-	waitmessage B_WAIT_TIME_LONG
-	goto BattleScript_MoveEnd
-
 BattleScript_NotAffected::
 	pause B_WAIT_TIME_SHORT
 	orbyte gMoveResultFlags, MOVE_RESULT_DOESNT_AFFECT_FOE
@@ -4407,10 +4401,12 @@ BattleScript_EffectUTurn::
 	critmessage
 	waitmessage B_WAIT_TIME_LONG
 	resultmessage
-	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE
 	tryfaintmon BS_TARGET
-	jumpifcantswitch BS_ATTACKER, BattleScript_ButItFailedUTurn
-	openpartyscreen BS_ATTACKER, BattleScript_ButItFailedUTurn
+	waitmessage B_WAIT_TIME_LONG
+	jumpifcantswitch SWITCH_IGNORE_ESCAPE_PREVENTION | BS_ATTACKER, BattleScript_MoveEnd
+	jumpifnoenemiesleft BS_ATTACKER, BattleScript_MoveEnd
+	waitanimation
+	openpartyscreen BS_ATTACKER, BattleScript_MoveEnd
 	switchoutabilities BS_ATTACKER
 	waitstate
 	switchhandleorder BS_ATTACKER, 2

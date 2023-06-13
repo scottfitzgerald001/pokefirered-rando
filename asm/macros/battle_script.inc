@@ -473,6 +473,12 @@
 	.4byte \ptr
 	.endm
 
+	.macro jumpifnoenemiesleft battler:req, ptr:req
+	.byte 0xf8
+	.byte \battler
+	.4byte \ptr
+	.endm
+
 	.macro openpartyscreen param0:req, param1:req
 	.byte 0x50
 	.byte \param0

@@ -357,8 +357,13 @@
 #define MOVE_DOOM_DESIRE 353
 #define MOVE_PSYCHO_BOOST 354
 #define MOVE_U_TURN 355
+#define MOVE_AQUA_JET 356
+#define MOVE_BULLET_PUNCH 357
+#define MOVE_ICE_SHARD 358
+#define MOVE_SHADOW_SNEAK 359
+#define MOVE_VACUUM_WAVE 360
 
-#define MOVES_COUNT 356
+#define MOVES_COUNT 361  // Always +1 from last move
 
 // Used for checks for moves affected by Disable, Mimic, etc.
 #define MOVE_UNAVAILABLE 0xFFFF

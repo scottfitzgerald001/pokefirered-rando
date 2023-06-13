@@ -68,11 +68,26 @@ enum {
 // For the second argument of GetMoveTarget, when no target override is needed
 #define NO_TARGET_OVERRIDE 0
 
+// For stat mutlipliers
+#define ATK_MASK 0xFC000000
+#define DEF_MASK 0x03F00000
+#define SPA_MASK 0x000FC000
+#define SPD_MASK 0x00003F00
+#define SPE_MASK 0x000000FC
+
+#define ATK_OFFSET 26
+#define DEF_OFFSET 20
+#define SPA_OFFSET 14
+#define SPD_OFFSET 8
+#define SPE_OFFSET 2
+
 struct TrainerMonNoItemDefaultMoves
 {
     u16 iv;
     u8 lvl;
     u16 species;
+    u16 personalityShort;       // default 0 ignores personality override and sets random value
+    u32 statMultipliers;        // default 0x00000000 sets random multipliers (if you want MIN multipliers set the value to 1)
 };
 
 struct TrainerMonItemDefaultMoves
@@ -81,6 +96,8 @@ struct TrainerMonItemDefaultMoves
     u8 lvl;
     u16 species;
     u16 heldItem;
+    u16 personalityShort;       // default 0 ignores personality override and sets random value
+    u32 statMultipliers;        // default 0x00000000 sets random multipliers (if you want MIN multipliers set the value to 1)
 };
 
 struct TrainerMonNoItemCustomMoves
@@ -89,6 +106,8 @@ struct TrainerMonNoItemCustomMoves
     u8 lvl;
     u16 species;
     u16 moves[MAX_MON_MOVES];
+    u16 personalityShort;       // default 0 ignores personality override and sets random value
+    u32 statMultipliers;        // default 0x00000000 sets random multipliers (if you want MIN multipliers set the value to 1)
 };
 
 struct TrainerMonItemCustomMoves
@@ -98,6 +117,8 @@ struct TrainerMonItemCustomMoves
     u16 species;
     u16 heldItem;
     u16 moves[MAX_MON_MOVES];
+    u16 personalityShort;       // default 0 ignores personality override and sets random value
+    u32 statMultipliers;        // default 0x00000000 sets random multipliers (if you want MIN multipliers set the value to 1)
 };
 
 #define NO_ITEM_DEFAULT_MOVES(party) { .NoItemDefaultMoves = party }, .partySize = ARRAY_COUNT(party), .partyFlags = 0
