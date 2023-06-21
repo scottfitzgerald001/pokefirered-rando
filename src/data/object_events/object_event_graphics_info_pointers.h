@@ -150,6 +150,12 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_DeoxysD;
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_DeoxysA;
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_DeoxysN;
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_SSAnne;
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ProfOakBike;
+//const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ProfOakSurf;
+//const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ProfOakFieldMove;
+//const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ProfOakFish;
+//const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ProfOakVSSeeker;
+//const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ProfOakVSSeekerBike;
 
 
 const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM_OBJ_EVENT_GFX] = {
@@ -305,4 +311,5 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_DEOXYS_A]                 = &gObjectEventGraphicsInfo_DeoxysA,
     [OBJ_EVENT_GFX_DEOXYS_N]                 = &gObjectEventGraphicsInfo_DeoxysN,
     [OBJ_EVENT_GFX_SS_ANNE]                  = &gObjectEventGraphicsInfo_SSAnne,
+    [OBJ_EVENT_GFX_PROF_OAK_BIKE]            = &gObjectEventGraphicsInfo_ProfOakBike,
 };

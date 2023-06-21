@@ -356,14 +356,28 @@
 #define MOVE_WATER_PULSE 352
 #define MOVE_DOOM_DESIRE 353
 #define MOVE_PSYCHO_BOOST 354
+// Added moves
+// Gen 4
 #define MOVE_U_TURN 355
 #define MOVE_AQUA_JET 356
 #define MOVE_BULLET_PUNCH 357
 #define MOVE_ICE_SHARD 358
 #define MOVE_SHADOW_SNEAK 359
 #define MOVE_VACUUM_WAVE 360
+#define MOVE_SHADOW_CLAW 361
+#define MOVE_GIGA_IMPACT 362
+#define MOVE_AIR_SLASH 363
+#define MOVE_X_SCISSOR 364
+#define MOVE_ROOST 365
+#define MOVE_BRAVE_BIRD 366
+#define MOVE_AURA_SPHERE 367
+#define MOVE_CHARGE_BEAM 368
+#define MOVE_AQUA_RING 369
+#define MOVE_AQUA_TAIL 370
+#define MOVE_BUG_BUZZ 371
+#define MOVE_CLOSE_COMBAT 372
 
-#define MOVES_COUNT 361  // Always +1 from last move
+#define MOVES_COUNT 373  // Always +1 from last move
 
 // Used for checks for moves affected by Disable, Mimic, etc.
 #define MOVE_UNAVAILABLE 0xFFFF

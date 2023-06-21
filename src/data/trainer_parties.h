@@ -23,7 +23,8 @@
 
 #define MODIFY_FIRST_TYPE       150  // Subtract this from the threshold of the desired type
 #define MODIFY_SECOND_TYPE      100  // Subtract this from the threshold of the desired type
-#define GIVE_SECOND_ABILITY     25   // Add this to the personalityShort to modulate to the secondary ability
+#define GIVE_SECOND_ABILITY     25   // Add this to the personalityShort to modulate to the secondary ability (Note: this is ignored if ability 2 is NONE)
+#define GIVE_THIRD_ABILITY      50   // Same as above (Note: if the 3rd ability is NONE, this will choose between the 1st and 2nd ability)
 
 static const struct TrainerMonNoItemDefaultMoves sParty_AquaLeader[] = {DUMMY_TRAINER_MON};
 static const struct TrainerMonNoItemDefaultMoves sParty_AquaGruntM[] = {DUMMY_TRAINER_MON};

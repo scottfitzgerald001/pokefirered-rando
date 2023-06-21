@@ -555,6 +555,10 @@ AI_CBM_Ingrain::
 	if_status3 AI_USER, STATUS3_ROOTED, Score_Minus10
 	end
 
+AI_CBM_AquaRing::
+	if_status3 AI_USER, STATUS3_AQUA_RING, Score_Minus10
+	end
+
 AI_CBM_Recycle::
 	get_used_held_item AI_USER
 	if_equal ITEM_NONE, Score_Minus10
@@ -2855,6 +2859,10 @@ AI_SetupFirstTurn_SetupEffectsToEncourage::
 	.byte EFFECT_BULK_UP
 	.byte EFFECT_CALM_MIND
 	.byte EFFECT_CAMOUFLAGE
+	.byte EFFECT_SUNNY_DAY
+	.byte EFFECT_SANDSTORM
+	.byte EFFECT_HAIL
+	.byte EFFECT_RAIN_DANCE
 	.byte -1
 
 AI_PreferStrongestMove::

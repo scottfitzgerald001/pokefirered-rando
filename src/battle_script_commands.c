@@ -310,6 +310,7 @@ static void Cmd_removeattackerstatus1(void);
 static void Cmd_finishaction(void);
 static void Cmd_finishturn(void);
 static void Cmd_jumpifnoenemiesleft(void);
+static void Cmd_trysetaquaring(void);
 
 void (* const gBattleScriptingCommandsTable[])(void) =
 {
@@ -562,6 +563,7 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_finishaction,                            //0xF6
     Cmd_finishturn,                              //0xF7
     Cmd_jumpifnoenemiesleft,                     //0xF8
+    Cmd_trysetaquaring,                          //0xF9
 };
 
 struct StatFractions
@@ -649,6 +651,7 @@ static const u8 *const sMoveEffectBS_Ptrs[] =
     [MOVE_EFFECT_RAPIDSPIN]        = BattleScript_MoveEffectSleep,
     [MOVE_EFFECT_REMOVE_PARALYSIS] = BattleScript_MoveEffectSleep,
     [MOVE_EFFECT_ATK_DEF_DOWN]     = BattleScript_MoveEffectSleep,
+    [MOVE_EFFECT_BOTH_DEF_DOWN]    = BattleScript_MoveEffectSleep,
     [MOVE_EFFECT_RECOIL_33]        = BattleScript_MoveEffectRecoil,
 };
 
@@ -1020,7 +1023,7 @@ static void Cmd_accuracycheck(void)
         JumpIfMoveFailed(7, move);
         return;
     }
-    if (move == NO_ACC_CALC || move == NO_ACC_CALC_CHECK_LOCK_ON)
+    if (move == NO_ACC_CALC || move == NO_ACC_CALC_CHECK_LOCK_ON || (WEATHER_HAS_EFFECT && gBattleWeather & B_WEATHER_HAIL && gBattleMoves[move].effect == EFFECT_BLIZZARD))
     {
         if (gStatuses3[gBattlerTarget] & STATUS3_ALWAYS_HITS && move == NO_ACC_CALC_CHECK_LOCK_ON && gDisableStructs[gBattlerTarget].battlerWithSureHit == gBattlerAttacker)
             gBattlescriptCurrInstr += 7;
@@ -1065,7 +1068,7 @@ static void Cmd_accuracycheck(void)
         // check Thunder on sunny weather
         if (WEATHER_HAS_EFFECT && gBattleWeather & B_WEATHER_SUN && gBattleMoves[move].effect == EFFECT_THUNDER)
             moveAcc = 50;
-
+        
         calc = sAccuracyStageRatios[buff].dividend * moveAcc;
         calc /= sAccuracyStageRatios[buff].divisor;
 
@@ -2744,6 +2747,10 @@ void SetMoveEffect(bool8 primary, u8 certain)
             case MOVE_EFFECT_ATK_DEF_DOWN: // SuperPower
                 BattleScriptPush(gBattlescriptCurrInstr + 1);
                 gBattlescriptCurrInstr = BattleScript_AtkDefDown;
+                break;
+            case MOVE_EFFECT_BOTH_DEF_DOWN: // Close Combat
+                BattleScriptPush(gBattlescriptCurrInstr + 1);
+                gBattlescriptCurrInstr = BattleScript_BothDefDown;
                 break;
             case MOVE_EFFECT_RECOIL_33: // Double Edge
                 gBattleMoveDamage = gHpDealt / 3;
@@ -9030,6 +9037,20 @@ static void Cmd_trysetroots(void)
     else
     {
         gStatuses3[gBattlerAttacker] |= STATUS3_ROOTED;
+        gBattlescriptCurrInstr += 5;
+    }
+}
+
+// AQUA_RING
+static void Cmd_trysetaquaring(void)
+{
+    if (gStatuses3[gBattlerAttacker] & STATUS3_AQUA_RING)
+    {
+        gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
+    }
+    else
+    {
+        gStatuses3[gBattlerAttacker] |= STATUS3_AQUA_RING;
         gBattlescriptCurrInstr += 5;
     }
 }

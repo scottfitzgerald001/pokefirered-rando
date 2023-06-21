@@ -115,23 +115,28 @@
 #define NUMBER_OF_MON_TYPES 18
 
 // Dynamic Type Thresholds
-#define TYPE_NORMAL_THRESHOLD           150
-#define TYPE_FIGHTING_THRESHOLD         300
-#define TYPE_FLYING_THRESHOLD           450
-#define TYPE_POISON_THRESHOLD           600
-#define TYPE_GROUND_THRESHOLD           750
-#define TYPE_ROCK_THRESHOLD             900
-#define TYPE_BUG_THRESHOLD              1050
-#define TYPE_GHOST_THRESHOLD            1200
-#define TYPE_STEEL_THRESHOLD            1350
-#define TYPE_FIRE_THRESHOLD             1500
-#define TYPE_WATER_THRESHOLD            1650
-#define TYPE_GRASS_THRESHOLD            1800
-#define TYPE_ELECTRIC_THRESHOLD         1950
-#define TYPE_PSYCHIC_THRESHOLD          2100
-#define TYPE_ICE_THRESHOLD              2250
-#define TYPE_DRAGON_THRESHOLD           2400
-#define TYPE_DARK_THRESHOLD             2550
+#define TYPE_NORMAL_THRESHOLD           225
+#define TYPE_FIGHTING_THRESHOLD         450
+#define TYPE_FLYING_THRESHOLD           675
+#define TYPE_POISON_THRESHOLD           900
+#define TYPE_GROUND_THRESHOLD           1125
+#define TYPE_ROCK_THRESHOLD             1350
+#define TYPE_BUG_THRESHOLD              1575
+#define TYPE_GHOST_THRESHOLD            1800
+#define TYPE_STEEL_THRESHOLD            2025
+#define TYPE_FIRE_THRESHOLD             2250
+#define TYPE_WATER_THRESHOLD            2475
+#define TYPE_GRASS_THRESHOLD            2700
+#define TYPE_ELECTRIC_THRESHOLD         2925
+#define TYPE_PSYCHIC_THRESHOLD          3150
+#define TYPE_ICE_THRESHOLD              3375
+#define TYPE_DRAGON_THRESHOLD           3600
+#define TYPE_DARK_THRESHOLD             3825
+
+// Other personality val thresholds
+#define FIRST_ABILITY_THRESHOLD         25
+#define SECOND_ABILITY_THRESHOLD        50
+#define THIRD_ABILITY_THRESHOLD         75
 
 // Pokemon egg groups
 #define EGG_GROUP_NONE         0
