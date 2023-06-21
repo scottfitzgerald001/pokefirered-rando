@@ -236,6 +236,11 @@ gBattleScriptsForMoveEffects::
 	.4byte BattleScript_EffectDragonDance            @ EFFECT_DRAGON_DANCE
 	.4byte BattleScript_EffectCamouflage             @ EFFECT_CAMOUFLAGE
 	.4byte BattleScript_EffectUTurn                  @ EFFECT_U_TURN
+	.4byte BattleScript_EffectSpecialAttackUpHit     @ EFFECT_SPATK_UP_HIT
+	.4byte BattleScript_EffectFreezeHit              @ EFFECT_BLIZZARD
+	.4byte BattleScript_EffectAquaRing            	 @ EFFECT_AQUA_RING
+	.4byte BattleScript_EffectCloseCombat            @ EFFECT_CLOSE_COMBAT
+
 
 BattleScript_EffectHit::
 	jumpifnotmove MOVE_SURF, BattleScript_HitFromAtkCanceler
@@ -1393,7 +1398,7 @@ BattleScript_TripleKickLoop::
 BattleScript_DoTripleKickAttack::
 	accuracycheck BattleScript_TripleKickNoMoreHits, ACC_CURR_MOVE
 	movevaluescleanup
-	addbyte sTRIPLE_KICK_POWER, 10
+	addbyte sTRIPLE_KICK_POWER, 20
 	addbyte sMULTIHIT_STRING + 4, 1
 	copyhword gDynamicBasePower, sTRIPLE_KICK_POWER
 	critcalc
@@ -3560,6 +3565,15 @@ BattleScript_IngrainTurnHeal::
 	datahpupdate BS_ATTACKER
 	end2
 
+BattleScript_AquaRingTurnHeal::
+	playanimation BS_ATTACKER, B_ANIM_AQUA_RING_HEAL
+	printstring STRINGID_PKMNAQUARING
+	waitmessage B_WAIT_TIME_LONG
+	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE
+	healthbarupdate BS_ATTACKER
+	datahpupdate BS_ATTACKER
+	end2
+
 BattleScript_PrintMonIsRooted::
 	pause B_WAIT_TIME_SHORT
 	printstring STRINGID_PKMNANCHOREDITSELF
@@ -3583,6 +3597,25 @@ BattleScript_AtkDefDownAtkFail::
 	printfromtable gStatDownStringIds
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_AtkDefDownDefFail::
+	return
+
+BattleScript_BothDefDown::
+	setbyte sSTAT_ANIM_PLAYED, FALSE
+	playstatchangeanimation BS_ATTACKER, BIT_DEF | BIT_SPDEF, STAT_CHANGE_CANT_PREVENT | STAT_CHANGE_NEGATIVE | STAT_CHANGE_MULTIPLE_STATS
+	playstatchangeanimation BS_ATTACKER, BIT_SPDEF, STAT_CHANGE_CANT_PREVENT | STAT_CHANGE_NEGATIVE
+	setstatchanger STAT_SPDEF, 1, TRUE
+	statbuffchange MOVE_EFFECT_AFFECTS_USER | MOVE_EFFECT_CERTAIN | STAT_CHANGE_ALLOW_PTR, BattleScript_BothDefDownSpDefFail
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, 2, BattleScript_BothDefDownSpDefFail
+	printfromtable gStatDownStringIds
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_BothDefDownSpDefFail::
+	playstatchangeanimation BS_ATTACKER, BIT_DEF, STAT_CHANGE_NEGATIVE | STAT_CHANGE_CANT_PREVENT
+	setstatchanger STAT_DEF, 1, TRUE
+	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR | MOVE_EFFECT_CERTAIN, BattleScript_BothDefDownDefFail
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, 2, BattleScript_BothDefDownDefFail
+	printfromtable gStatDownStringIds
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_BothDefDownDefFail::
 	return
 
 BattleScript_KnockedOff::
@@ -4419,3 +4452,22 @@ BattleScript_EffectUTurn::
 	waitstate
 	switchineffects BS_ATTACKER
 	goto BattleScript_MoveEnd
+
+BattleScript_EffectSpecialAttackUpHit::
+	setmoveeffect MOVE_EFFECT_SP_ATK_PLUS_1 | MOVE_EFFECT_AFFECTS_USER
+	goto BattleScript_EffectHit
+
+BattleScript_EffectAquaRing::
+	attackcanceler
+	attackstring
+	ppreduce
+	trysetaquaring BattleScript_ButItFailed
+	attackanimation
+	waitanimation
+	printstring STRINGID_PKMNSETUPAQUARING
+	waitmessage B_WAIT_TIME_LONG
+	goto BattleScript_MoveEnd
+
+BattleScript_EffectCloseCombat::
+	setmoveeffect MOVE_EFFECT_BOTH_DEF_DOWN | MOVE_EFFECT_AFFECTS_USER | MOVE_EFFECT_CERTAIN
+	goto BattleScript_EffectHit

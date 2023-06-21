@@ -129,6 +129,7 @@ static bool8 FindMonThatAbsorbsOpponentsMove(void)
          || (i == *(gBattleStruct->monToSwitchIntoId + battlerIn2)))
             continue;
         species = GetMonData(&gEnemyParty[i], MON_DATA_SPECIES);
+        // ABILITY TODO: Will likely need to dig in here
         if (GetMonData(&gEnemyParty[i], MON_DATA_ABILITY_NUM) != ABILITY_NONE)
             monAbility = gSpeciesInfo[species].abilities[1];
         else
@@ -274,6 +275,7 @@ static bool8 FindMonWithFlagsAndSuperEffective(u8 flags, u8 moduloPercent)
          || (i == *(gBattleStruct->monToSwitchIntoId + battlerIn2)))
             continue;
         species = GetMonData(&gEnemyParty[i], MON_DATA_SPECIES);
+        // ABILITY TODO: Will likely need to dig in here
         if (GetMonData(&gEnemyParty[i], MON_DATA_ABILITY_NUM) != ABILITY_NONE)
             monAbility = gSpeciesInfo[species].abilities[1];
         else

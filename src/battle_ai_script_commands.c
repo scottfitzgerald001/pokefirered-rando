@@ -1147,6 +1147,7 @@ static void Cmd_get_ability(void)
     if (GetBattlerSide(battlerId) == AI_TARGET)
     {
         u16 side = GET_BATTLER_SIDE(battlerId);
+        u16 guessedAbilityIdx;
 
         if (BATTLE_HISTORY->abilities[side] != 0)
         {
@@ -1167,22 +1168,24 @@ static void Cmd_get_ability(void)
 
         if (gSpeciesInfo[gBattleMons[battlerId].species].abilities[0] != ABILITY_NONE)
         {
-            if (gSpeciesInfo[gBattleMons[battlerId].species].abilities[1] != ABILITY_NONE)
+            if (gSpeciesInfo[gBattleMons[battlerId].species].abilities[2] != ABILITY_NONE)
             {
                 // AI has no knowledge of opponent, so it guesses which ability.
-                if (Random() % 2)
-                    AI_THINKING_STRUCT->funcResult = gSpeciesInfo[gBattleMons[battlerId].species].abilities[0];
-                else
-                    AI_THINKING_STRUCT->funcResult = gSpeciesInfo[gBattleMons[battlerId].species].abilities[1];
+                guessedAbilityIdx = Random() % 3;
+                AI_THINKING_STRUCT->funcResult = gSpeciesInfo[gBattleMons[battlerId].species].abilities[guessedAbilityIdx];
             }
-            else
+            else if (gSpeciesInfo[gBattleMons[battlerId].species].abilities[1] != ABILITY_NONE)
             {
+                guessedAbilityIdx = Random() % 2;
+                AI_THINKING_STRUCT->funcResult = gSpeciesInfo[gBattleMons[battlerId].species].abilities[guessedAbilityIdx];
+            } else {
                 AI_THINKING_STRUCT->funcResult = gSpeciesInfo[gBattleMons[battlerId].species].abilities[0];
             }
         }
         else
         {
-             // AI can't actually reach this part since no pokemon has ability 2 and no ability 1.
+            // AI can't actually reach this part since no pokemon has ability 2 and no ability 1.
+            // NOTE: I preserve this convention, the first ABILITY_NONE is considered the final ability.
             AI_THINKING_STRUCT->funcResult = gSpeciesInfo[gBattleMons[battlerId].species].abilities[1];
         }
     }
@@ -1390,7 +1393,7 @@ static void Cmd_get_weather(void)
         AI_THINKING_STRUCT->funcResult = WEATHER_TYPE_SANDSTORM;
     if (gBattleWeather & B_WEATHER_SUN)
         AI_THINKING_STRUCT->funcResult = WEATHER_TYPE_SUNNY;
-    if (gBattleWeather & B_WEATHER_HAIL_TEMPORARY)
+    if (gBattleWeather & B_WEATHER_HAIL)
         AI_THINKING_STRUCT->funcResult = WEATHER_TYPE_HAIL;
 
     sAIScriptPtr += 1;
