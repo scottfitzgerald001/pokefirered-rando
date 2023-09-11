@@ -230,6 +230,13 @@
 #define LEVEL_UP_MOVE_LV   0xFE00
 #define LEVEL_UP_END       0xFFFF
 
+// Extended format for type moves
+#define LEVEL_UP_TYPE_MOVE_LV         0xFE000000
+#define LEVEL_UP_TYPE_END             0xFFFFFFFF
+#define LEVEL_UP_TYPE_MOVE_ID         0x01FF0000
+#define LEVEL_UP_TYPE_FLAGS           0x0000FFFF
+#define LEVEL_UP_TYPE_INTERNAL_END    0xFFFF0000
+
 #define MAX_LEVEL_UP_MOVES       40
 
 #define MON_MALE       0x00

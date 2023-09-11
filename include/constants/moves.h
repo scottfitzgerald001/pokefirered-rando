@@ -376,8 +376,51 @@
 #define MOVE_AQUA_TAIL 370
 #define MOVE_BUG_BUZZ 371
 #define MOVE_CLOSE_COMBAT 372
+#define MOVE_AVALANCHE 373
+#define MOVE_CROSS_POISON 374
+#define MOVE_DARK_PULSE 375
+#define MOVE_DISCHARGE 376
+#define MOVE_DRACO_METEOR 377
+#define MOVE_DRAGON_PULSE 378
+#define MOVE_DRAGON_RUSH 379
+#define MOVE_DRAIN_PUNCH 380
+#define MOVE_EARTH_POWER 381
+#define MOVE_ENERGY_BALL 382
+#define MOVE_FLARE_BLITZ 383
+#define MOVE_FLASH_CANNON 384
+#define MOVE_FOCUS_BLAST 385
+#define MOVE_FORCE_PALM 386
+#define MOVE_GRASS_KNOT 387
+#define MOVE_GUNK_SHOT 388
+#define MOVE_HAMMER_ARM 389
+#define MOVE_HEAD_SMASH 390
+#define MOVE_IRON_HEAD 391
+#define MOVE_LAVA_PLUME 392
+#define MOVE_LEAF_STORM 393
+#define MOVE_MAGNET_BOMB 394
+#define MOVE_MIRROR_SHOT 395
+#define MOVE_MUD_BOMB 396
+#define MOVE_NASTY_PLOT 397
+#define MOVE_NIGHT_SLASH 398
+#define MOVE_OMINOUS_WIND 399
+#define MOVE_PAYBACK 400
+#define MOVE_POISON_JAB 401
+#define MOVE_POWER_GEM 402
+#define MOVE_POWER_WHIP 403
+#define MOVE_PSYCHO_CUT 404
+#define MOVE_ROCK_POLISH 405
+#define MOVE_ROCK_WRECKER 406
+#define MOVE_SEED_BOMB 407
+#define MOVE_STONE_EDGE 408
+#define MOVE_WOOD_HAMMER 409
+#define MOVE_ZEN_HEADBUTT 410
 
-#define MOVES_COUNT 373  // Always +1 from last move
+// consider magnet rise or miracle eye?
+// bug bite or pluck?
+// fire/ice/thunder fangs?
+// gyro ball?
+
+#define MOVES_COUNT 411  // Always +1 from last move
 
 // Used for checks for moves affected by Disable, Mimic, etc.
 #define MOVE_UNAVAILABLE 0xFFFF

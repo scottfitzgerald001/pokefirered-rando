@@ -1622,15 +1622,15 @@ static const struct SpriteFrameImage sPicTable_HoOh[] = {
 };
 
 static const struct SpriteFrameImage sPicTable_Celebi[] = {
-    overworld_frame(gObjectEventPic_Celebi, 2, 2, 0),
-    overworld_frame(gObjectEventPic_Celebi, 2, 2, 0),
-    overworld_frame(gObjectEventPic_Celebi, 2, 2, 0),
-    overworld_frame(gObjectEventPic_Celebi, 2, 2, 0),
-    overworld_frame(gObjectEventPic_Celebi, 2, 2, 0),
-    overworld_frame(gObjectEventPic_Celebi, 2, 2, 0),
-    overworld_frame(gObjectEventPic_Celebi, 2, 2, 0),
-    overworld_frame(gObjectEventPic_Celebi, 2, 2, 0),
-    overworld_frame(gObjectEventPic_Celebi, 2, 2, 0),
+    overworld_frame(gObjectEventPic_Celebi, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Celebi, 2, 4, 1),
+    overworld_frame(gObjectEventPic_Celebi, 2, 4, 2),
+    overworld_frame(gObjectEventPic_Celebi, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Celebi, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Celebi, 2, 4, 1),
+    overworld_frame(gObjectEventPic_Celebi, 2, 4, 1),
+    overworld_frame(gObjectEventPic_Celebi, 2, 4, 2),
+    overworld_frame(gObjectEventPic_Celebi, 2, 4, 2),
 };
 
 static const struct SpriteFrameImage sPicTable_Cubone[] = {

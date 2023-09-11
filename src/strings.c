@@ -783,6 +783,7 @@ const u8 gText_RegionMap_DPadMove[] = _("{DPAD_ANY}MOVE");
 const u8 gText_RegionMap_UpDownPick[] = _("{DPAD_UPDOWN}PICK");
 const u8 gText_RegionMap_NoData[] = _("No data");
 const u8 gText_RegionMap_AreaDesc_ViridianForest[] = _("A deep and sprawling forest that\nextends around VIRIDIAN CITY.\nA natural maze, many people\nbecome lost inside.");
+const u8 gText_RegionMap_AreaDesc_ViridianReserve[] = _("A guarded nature reserve hidden\ndeep inside the VIRIDIAN FOREST.\nPOKéMON here have grown stronger\nin absence of human disruption.");
 const u8 gText_RegionMap_AreaDesc_MtMoon[] = _("A mystical mountain that is known\nfor its frequent meteor falls.\nThe shards of stars that fall\nhere are known as MOON STONES.");
 const u8 gText_RegionMap_AreaDesc_DiglettsCave[] = _("A seemingly plain tunnel that was\ndug by wild DIGLETT.\nIt is famous for connecting\nROUTES 2 and 11.");
 const u8 gText_RegionMap_AreaDesc_VictoryRoad[] = _("A tunnel situated on ROUTE 23.\nIt earned its name because it\nmust be traveled by all TRAINERS\naiming for the top.");
@@ -894,6 +895,9 @@ const u8 gText_SaveFailed[] = _("レポ-トの かきこみに\nしっぱい し
 const u8 gText_NoSaveFileCantSetTime[] = _("レポ-トが ないので\nじかんの せっていは できません!");
 const u8 gText_InGameClockUsable[] = _("ゲ-ムない じかんの しゅうせい システムが\nつかえる ように なりました!");
 const u8 gText_SavingDontTurnOffThePower2[] = _("SAVING…\nDON'T TURN OFF THE POWER.");
+
+// Custom Map Titles
+const u8 sMapsecName_VIRIDIANRESERVE[] = _("VIRIDIAN RESERVE");
 
 // Start menu option descriptions
 const u8 gStartMenuDesc_Pokedex[] = _("A device that records POKéMON secrets\nupon meeting or catching them.");

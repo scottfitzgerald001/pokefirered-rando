@@ -81,6 +81,7 @@ static void GiveBoxMonInitialMoveset(struct BoxPokemon *boxMon);
 static u16 GiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move);
 static u8 GetLevelFromMonExp(struct Pokemon *mon);
 static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon);
+static u16 GetNextEligibleTypeMove(const u32 *typeMoves, struct BoxPokemon *boxMon, s32 startIdx);
 
 #include "data/battle_moves.h"
 
@@ -2471,6 +2472,64 @@ static void GiveMonInitialMoveset(struct Pokemon *mon)
     GiveBoxMonInitialMoveset(&mon->box);
 }
 
+u16 GetNextEligibleTypeMove(const u32 *typeMoves, struct BoxPokemon *boxMon, s32 startIdx) 
+{
+    u16 species = GetBoxMonData(boxMon, MON_DATA_SPECIES, NULL);
+    u16 atk = GetBoxMonData(boxMon, MON_DATA_ATK, NULL);
+    u16 spAtk = GetBoxMonData(boxMon, MON_DATA_SPATK, NULL);
+    u16 atkDif, atkDenom, pDif;
+    u16 move = 0xFFFF;
+    u16 flags = 0;
+    u16 atkFlags = 0;
+    u16 abilityFlags = 0;
+    s32 i = startIdx;
+    u32 personality = GetBoxMonData(boxMon, MON_DATA_PERSONALITY, NULL);
+
+    if (atk > spAtk){
+        atkDif = atk - spAtk;
+    }
+    else {
+        atkDif = spAtk - atk;
+    }
+    atkDenom = (atk + spAtk) / 2;
+    // Note: multiple by 50 prevents possible overflow issues
+    pDif = (atkDif * 50) / atkDenom;
+    pDif = pDif * 2;
+
+    if (pDif > 20){
+        if (atk > spAtk){
+            atkFlags = FLAG_PHYSICAL_ATTACKER;
+        } 
+        else {
+            atkFlags = FLAG_SPECIAL_ATTACKER;
+        }
+    }
+    else {
+        atkFlags = FLAG_MIXED_ATTACKER;
+    }
+
+    if (personality % TYPE_DARK_THRESHOLD % 75 < 25)
+        abilityFlags = FLAG_IS_ABILITY_1;
+    else if (personality % TYPE_DARK_THRESHOLD % 75 < 50)
+        abilityFlags = FLAG_IS_ABILITY_2;
+    else 
+        abilityFlags = FLAG_IS_ABILITY_3;
+
+    move = (typeMoves[i] >> 16);
+    flags = (typeMoves[i] & LEVEL_UP_TYPE_FLAGS) | atkFlags;
+    while(move != LEVEL_UP_END){
+        if (flags == 0 || ((gLevelUpTypeFlags[species] | atkFlags | abilityFlags) & flags)){
+            // if flags is FLAG_ALL_CAN_LEARN or matches this mon
+            break;
+        }
+        i++;
+        move = (typeMoves[i] >> 16);
+        flags = (typeMoves[i] & LEVEL_UP_TYPE_FLAGS);
+    }
+
+    return move;
+}
+
 static void GiveBoxMonInitialMoveset(struct BoxPokemon *boxMon)
 {
     u16 species = GetBoxMonData(boxMon, MON_DATA_SPECIES, NULL);
@@ -2487,11 +2546,13 @@ static void GiveBoxMonInitialMoveset(struct BoxPokemon *boxMon)
     else 
         newType = TYPE_MYSTERY;  // Special moves for pokemon who's type are unchanged
     
-    while(gLevelUpLearnsets[species][i] != LEVEL_UP_END || gLevelUpTypeLearnsets[type1][t] != LEVEL_UP_END)
+    while(gLevelUpLearnsets[species][i] != LEVEL_UP_END || gLevelUpTypeLearnsets[type1][t] != LEVEL_UP_TYPE_END)
     {
         u16 move;
+        u16 nextTypeMove;
         moveLevelLearnset = (gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_LV);
-        moveLevelType = (gLevelUpTypeLearnsets[newType][t] & LEVEL_UP_MOVE_LV);
+        nextTypeMove = GetNextEligibleTypeMove(gLevelUpTypeLearnsets[newType], boxMon, t);
+        moveLevelType = (nextTypeMove & LEVEL_UP_MOVE_LV);
 
         if(gLevelUpLearnsets[species][i] != LEVEL_UP_END && moveLevelLearnset <= moveLevelType){
             if (moveLevelLearnset > (level << 9))
@@ -2504,16 +2565,34 @@ static void GiveBoxMonInitialMoveset(struct BoxPokemon *boxMon)
             
             i++;
         }
-        else if (gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_END) {
-            if (moveLevelType > (level << 9))
-                break;
+        else if (gLevelUpTypeLearnsets[type1][t] != LEVEL_UP_TYPE_END) {
+            if (nextTypeMove == LEVEL_UP_END){
+                // skip if this batch never matched mon
+                while(gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_TYPE_INTERNAL_END && gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_TYPE_END){
+                    t++;
+                }
+                if (gLevelUpTypeLearnsets[newType][t] == LEVEL_UP_TYPE_INTERNAL_END){
+                    // move to next starting segment
+                    t++;
+                }
+            } 
+            else {
+                if (moveLevelType > (level << 9))
+                    break;
 
-            move = (gLevelUpTypeLearnsets[newType][t] & LEVEL_UP_MOVE_ID);
+                move = (nextTypeMove & LEVEL_UP_MOVE_ID);
 
-            if (GiveMoveToBoxMon(boxMon, move) == MON_HAS_MAX_MOVES)
-                DeleteFirstMoveAndGiveMoveToBoxMon(boxMon, move);
+                if (GiveMoveToBoxMon(boxMon, move) == MON_HAS_MAX_MOVES)
+                    DeleteFirstMoveAndGiveMoveToBoxMon(boxMon, move);
 
-            t++;
+                while(gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_TYPE_INTERNAL_END && gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_TYPE_END){
+                    t++;
+                }
+                if (gLevelUpTypeLearnsets[newType][t] == LEVEL_UP_TYPE_INTERNAL_END){
+                    // move to next starting segment
+                    t++;
+                }
+            }
         }
         else {
             break;
@@ -2525,6 +2604,7 @@ u16 MonTryLearningNewMove(struct Pokemon *mon, bool8 firstMove)
 {
     u32 retVal = MOVE_NONE;
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
+    u16 nextTypeMove, moveLevelType;
     u8 level = GetMonData(mon, MON_DATA_LEVEL, NULL);
     bool8 noMoveFound = 0;
     u8 newType;
@@ -2558,12 +2638,25 @@ u16 MonTryLearningNewMove(struct Pokemon *mon, bool8 firstMove)
             sLearningMoveTableID = 0;
             sLearningMoveTableTableID = 1;
             noMoveFound = 0;
-            while ((gLevelUpTypeLearnsets[newType][sLearningMoveTableID] & LEVEL_UP_MOVE_LV) != (level << 9))
+            
+            nextTypeMove = GetNextEligibleTypeMove(gLevelUpTypeLearnsets[newType], &mon->box, sLearningMoveTableID);
+            moveLevelType = (nextTypeMove & LEVEL_UP_MOVE_LV);
+            while (moveLevelType != (level << 9))
             {
-                sLearningMoveTableID++;
-                if (gLevelUpTypeLearnsets[newType][sLearningMoveTableID] == LEVEL_UP_END)
+                if (gLevelUpTypeLearnsets[newType][sLearningMoveTableID] == LEVEL_UP_TYPE_END)
                     noMoveFound = 1;
                     break;
+
+                while(gLevelUpTypeLearnsets[newType][sLearningMoveTableID] != LEVEL_UP_TYPE_INTERNAL_END && gLevelUpTypeLearnsets[newType][sLearningMoveTableID] != LEVEL_UP_TYPE_END){
+                    sLearningMoveTableID++;
+                }
+                if (gLevelUpTypeLearnsets[newType][sLearningMoveTableID] == LEVEL_UP_TYPE_INTERNAL_END){
+                    // move to next starting segment
+                    sLearningMoveTableID++;
+                }
+                
+                nextTypeMove = GetNextEligibleTypeMove(gLevelUpTypeLearnsets[newType], &mon->box, sLearningMoveTableID);
+                moveLevelType = (nextTypeMove & LEVEL_UP_MOVE_LV);
             }
         }
         
@@ -2598,22 +2691,45 @@ u16 MonTryLearningNewMove(struct Pokemon *mon, bool8 firstMove)
     }
     
     if (sLearningMoveTableTableID == 1){
-        if (gLevelUpTypeLearnsets[newType][sLearningMoveTableID] == LEVEL_UP_END){
+        if (gLevelUpTypeLearnsets[newType][sLearningMoveTableID] == LEVEL_UP_TYPE_END){
             sLearningMoveTableTableID = 2;
             sLearningMoveTableID = 0;
         }
         else {
-            while ((gLevelUpTypeLearnsets[newType][sLearningMoveTableID] & LEVEL_UP_MOVE_LV) != (level << 9))
+            nextTypeMove = GetNextEligibleTypeMove(gLevelUpTypeLearnsets[newType], &mon->box, sLearningMoveTableID);
+            moveLevelType = (nextTypeMove & LEVEL_UP_MOVE_LV);
+            while (moveLevelType != (level << 9))
             {
-                sLearningMoveTableID++;
-                if (gLevelUpTypeLearnsets[newType][sLearningMoveTableID] == LEVEL_UP_END)
+                while(gLevelUpTypeLearnsets[newType][sLearningMoveTableID] != LEVEL_UP_TYPE_INTERNAL_END && gLevelUpTypeLearnsets[newType][sLearningMoveTableID] != LEVEL_UP_TYPE_END){
+                    sLearningMoveTableID++;
+                }
+
+                if (gLevelUpTypeLearnsets[newType][sLearningMoveTableID] == LEVEL_UP_TYPE_INTERNAL_END){
+                    // move to next starting segment
+                    sLearningMoveTableID++;
+                } 
+                else {
+                    // current index is the terminator
                     break;
+                } 
+                
+                nextTypeMove = GetNextEligibleTypeMove(gLevelUpTypeLearnsets[newType], &mon->box, sLearningMoveTableID);
+                moveLevelType = (nextTypeMove & LEVEL_UP_MOVE_LV);
             }
 
-            if ((gLevelUpTypeLearnsets[newType][sLearningMoveTableID] & LEVEL_UP_MOVE_LV) == (level << 9))
+            if (moveLevelType == (level << 9))
             {
-                gMoveToLearn = (gLevelUpTypeLearnsets[newType][sLearningMoveTableID] & LEVEL_UP_MOVE_ID);
-                sLearningMoveTableID++;
+                gMoveToLearn = (nextTypeMove & LEVEL_UP_MOVE_ID);
+
+                // Advance to next group
+                while(gLevelUpTypeLearnsets[newType][sLearningMoveTableID] != LEVEL_UP_TYPE_INTERNAL_END && gLevelUpTypeLearnsets[newType][sLearningMoveTableID] != LEVEL_UP_TYPE_END){
+                    sLearningMoveTableID++;
+                }
+                if (gLevelUpTypeLearnsets[newType][sLearningMoveTableID] == LEVEL_UP_TYPE_INTERNAL_END){
+                    // move to next starting segment
+                    sLearningMoveTableID++;
+                } 
+
                 retVal = GiveMoveToMon(mon, gMoveToLearn);
             }
             else {
@@ -2823,6 +2939,8 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
         gBattleMovePower = (150 * gBattleMovePower) / 100;
     if (WEATHER_HAS_EFFECT2 && (gBattleWeather & B_WEATHER_SANDSTORM) && (defender->type1 == TYPE_ROCK || defender->type2 == TYPE_ROCK )) 
         spDefense = (150 * spDefense) / 100; // adds sandstorm spdef boost
+    if (WEATHER_HAS_EFFECT2 && (gBattleWeather & B_WEATHER_HAIL) && (defender->type1 == TYPE_ICE || defender->type2 == TYPE_ICE )) 
+        defense = (150 * defense) / 100; // adds new hail def boost to make it more viable
 
     // Self-destruct / Explosion cut defense in half
     if (gBattleMoves[gCurrentMove].effect == EFFECT_EXPLOSION)
@@ -6135,13 +6253,15 @@ u8 GetMoveRelearnerMoves(struct Pokemon *mon, u16 *moves)
 
     i = 0, t = 0;
 
-    while((gLevelUpLearnsets[species][i] != LEVEL_UP_END || gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_END) && (i + t) < MAX_LEVEL_UP_MOVES)
+    while((gLevelUpLearnsets[species][i] != LEVEL_UP_END || gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_TYPE_END) && (i + t) < MAX_LEVEL_UP_MOVES)
     {
-        u16 moveLevelType, moveLevelLearnset;
+        u16 nextTypeMove, moveLevelType, moveLevelLearnset;
         moveLevelLearnset = (gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_LV);
-        moveLevelType = (gLevelUpTypeLearnsets[newType][t] & LEVEL_UP_MOVE_LV);
 
-        if (gLevelUpLearnsets[species][i] == LEVEL_UP_END && gLevelUpTypeLearnsets[newType][t] == LEVEL_UP_END)
+        nextTypeMove = GetNextEligibleTypeMove(gLevelUpTypeLearnsets[newType], &mon->box, t);
+        moveLevelType = (nextTypeMove & LEVEL_UP_MOVE_LV);
+
+        if (gLevelUpLearnsets[species][i] == LEVEL_UP_END && gLevelUpTypeLearnsets[newType][t] == LEVEL_UP_TYPE_END)
             break;
 
         if (gLevelUpLearnsets[species][i] != LEVEL_UP_END && moveLevelLearnset <= moveLevelType)
@@ -6164,19 +6284,32 @@ u8 GetMoveRelearnerMoves(struct Pokemon *mon, u16 *moves)
         else if (gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_END && moveLevelType <= moveLevelLearnset)
         {
             if (moveLevelType <= (level << 9)) {
-                for (j = 0; j < MAX_MON_MOVES && learnedMoves[j] != (gLevelUpTypeLearnsets[newType][t] & LEVEL_UP_MOVE_ID); j++)
+                for (j = 0; j < MAX_MON_MOVES && learnedMoves[j] != (nextTypeMove & LEVEL_UP_MOVE_ID); j++)
                     ;
 
                 if (j == MAX_MON_MOVES)
                 {
-                    for (k = 0; k < numMoves && moves[k] != (gLevelUpTypeLearnsets[newType][t] & LEVEL_UP_MOVE_ID); k++)
+                    for (k = 0; k < numMoves && moves[k] != (nextTypeMove & LEVEL_UP_MOVE_ID); k++)
                         ;
 
                     if (k == numMoves)
-                        moves[numMoves++] = gLevelUpTypeLearnsets[newType][t] & LEVEL_UP_MOVE_ID;
+                        moves[numMoves++] = (nextTypeMove & LEVEL_UP_MOVE_ID);
                 }
             }
-            t++;
+
+            while(nextTypeMove == LEVEL_UP_END && gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_TYPE_END) {
+                // skip move sets we cant learn 
+                while(gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_TYPE_INTERNAL_END && gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_TYPE_END){
+                    t++;
+                }
+                if (gLevelUpTypeLearnsets[newType][t] == LEVEL_UP_TYPE_INTERNAL_END){
+                    // move to next starting segment
+                    t++;
+                }
+
+                nextTypeMove = GetNextEligibleTypeMove(gLevelUpTypeLearnsets[newType], &mon->box, t);
+                moveLevelType = (nextTypeMove & LEVEL_UP_MOVE_LV);
+            }
         }
     }
 
@@ -6221,13 +6354,23 @@ u8 GetNumberOfRelearnableMoves(struct Pokemon *mon)
 
     i = 0, t = 0;
 
-    while((gLevelUpLearnsets[species][i] != LEVEL_UP_END || gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_END) && (i + t) < MAX_LEVEL_UP_MOVES)
+    while((gLevelUpLearnsets[species][i] != LEVEL_UP_END || gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_END) && numMoves < MAX_LEVEL_UP_MOVES)
     {
-        u16 moveLevelType, moveLevelLearnset;
+        u16 moveLevelType, nextTypeMove, moveLevelLearnset;
         moveLevelLearnset = (gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_LV);
-        moveLevelType = (gLevelUpTypeLearnsets[newType][t] & LEVEL_UP_MOVE_LV);
+        nextTypeMove = GetNextEligibleTypeMove(gLevelUpTypeLearnsets[newType], &mon->box, t);
+        moveLevelType = (nextTypeMove & LEVEL_UP_MOVE_LV);
+        while(nextTypeMove == LEVEL_UP_END && gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_TYPE_END) {
+            while(gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_TYPE_INTERNAL_END){
+                t++;
+            }
+            t++; // move to next starting index
 
-        if (gLevelUpLearnsets[species][i] == LEVEL_UP_END && gLevelUpTypeLearnsets[newType][t] == LEVEL_UP_END)
+            nextTypeMove = GetNextEligibleTypeMove(gLevelUpTypeLearnsets[newType], &mon->box, t);
+            moveLevelType = (nextTypeMove & LEVEL_UP_MOVE_LV);
+        }
+
+        if (gLevelUpLearnsets[species][i] == LEVEL_UP_END && gLevelUpTypeLearnsets[newType][t] == LEVEL_UP_TYPE_END)
             break;
 
         if (gLevelUpLearnsets[species][i] != LEVEL_UP_END && moveLevelLearnset <= moveLevelType)
@@ -6247,19 +6390,19 @@ u8 GetNumberOfRelearnableMoves(struct Pokemon *mon)
             }
             i++;
         }
-        else if (gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_END && moveLevelType <= moveLevelLearnset)
+        else if (gLevelUpTypeLearnsets[newType][t] != LEVEL_UP_TYPE_END && moveLevelType <= moveLevelLearnset)
         {
             if (moveLevelType <= (level << 9)) {
-                for (j = 0; j < MAX_MON_MOVES && learnedMoves[j] != (gLevelUpTypeLearnsets[newType][t] & LEVEL_UP_MOVE_ID); j++)
+                for (j = 0; j < MAX_MON_MOVES && learnedMoves[j] != (nextTypeMove & LEVEL_UP_MOVE_ID); j++)
                     ;
 
                 if (j == MAX_MON_MOVES)
                 {
-                    for (k = 0; k < numMoves && moves[k] != (gLevelUpTypeLearnsets[newType][t] & LEVEL_UP_MOVE_ID); k++)
+                    for (k = 0; k < numMoves && moves[k] != (nextTypeMove & LEVEL_UP_MOVE_ID); k++)
                         ;
 
                     if (k == numMoves)
-                        moves[numMoves++] = gLevelUpTypeLearnsets[newType][t] & LEVEL_UP_MOVE_ID;
+                        moves[numMoves++] = (nextTypeMove & LEVEL_UP_MOVE_ID);
                 }
             }
             t++;

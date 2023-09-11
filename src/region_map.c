@@ -643,6 +643,10 @@ static const struct DungeonMapInfo sDungeonInfo[] = {
         .name = sMapsecName_VIRIDIANFOREST,
         .desc = gText_RegionMap_AreaDesc_ViridianForest
     }, {
+        .id = MAPSEC_VIRIDIAN_RESERVE,
+        .name = sMapsecName_VIRIDIANRESERVE,
+        .desc = gText_RegionMap_AreaDesc_ViridianReserve
+    }, {
         .id = MAPSEC_MT_MOON,
         .name = sMapsecName_MTMOON,
         .desc = gText_RegionMap_AreaDesc_MtMoon
@@ -865,6 +869,7 @@ static const u8 sMapFlyDestinations[][3] = {
     [MAPSEC_ROUTE_24            - MAPSECS_KANTO] = {MAP(ROUTE24),                               0},
     [MAPSEC_ROUTE_25            - MAPSECS_KANTO] = {MAP(ROUTE25),                               0},
     [MAPSEC_VIRIDIAN_FOREST     - MAPSECS_KANTO] = {MAP(PALLET_TOWN),                           0},
+    [MAPSEC_VIRIDIAN_RESERVE    - MAPSECS_KANTO] = {MAP(PALLET_TOWN),                           0},
     [MAPSEC_MT_MOON             - MAPSECS_KANTO] = {MAP(PALLET_TOWN),                           0},
     [MAPSEC_S_S_ANNE            - MAPSECS_KANTO] = {MAP(PALLET_TOWN),                           0},
     [MAPSEC_UNDERGROUND_PATH    - MAPSECS_KANTO] = {MAP(PALLET_TOWN),                           0},
@@ -3010,6 +3015,8 @@ static u8 GetDungeonMapsecType(u8 mapsec)
         return MAPSECTYPE_NONE;
     case MAPSEC_VIRIDIAN_FOREST:
         return FlagGet(FLAG_WORLD_MAP_VIRIDIAN_FOREST) ? MAPSECTYPE_VISITED : MAPSECTYPE_NOT_VISITED;
+    case MAPSEC_VIRIDIAN_RESERVE:
+        return FlagGet(FLAG_WORLD_MAP_VIRIDIAN_RESERVE) ? MAPSECTYPE_VISITED : MAPSECTYPE_NOT_VISITED;
     case MAPSEC_MT_MOON:
         return FlagGet(FLAG_WORLD_MAP_MT_MOON_1F) ? MAPSECTYPE_VISITED : MAPSECTYPE_NOT_VISITED;
     case MAPSEC_S_S_ANNE:

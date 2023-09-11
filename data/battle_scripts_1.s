@@ -240,6 +240,7 @@ gBattleScriptsForMoveEffects::
 	.4byte BattleScript_EffectFreezeHit              @ EFFECT_BLIZZARD
 	.4byte BattleScript_EffectAquaRing            	 @ EFFECT_AQUA_RING
 	.4byte BattleScript_EffectCloseCombat            @ EFFECT_CLOSE_COMBAT
+	.4byte BattleScript_EffectHammerArm              @ EFFECT_HAMMER_ARM
 
 
 BattleScript_EffectHit::
@@ -4470,4 +4471,8 @@ BattleScript_EffectAquaRing::
 
 BattleScript_EffectCloseCombat::
 	setmoveeffect MOVE_EFFECT_BOTH_DEF_DOWN | MOVE_EFFECT_AFFECTS_USER | MOVE_EFFECT_CERTAIN
+	goto BattleScript_EffectHit
+
+BattleScript_EffectHammerArm::
+	setmoveeffect MOVE_EFFECT_SPD_MINUS_1 | MOVE_EFFECT_AFFECTS_USER | MOVE_EFFECT_CERTAIN
 	goto BattleScript_EffectHit

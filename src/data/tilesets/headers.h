@@ -174,6 +174,17 @@ const struct Tileset gTileset_Cave =
     .callback = NULL,
 };
 
+const struct Tileset gTileset_ForestCave =
+{
+    .isCompressed = TRUE,
+    .isSecondary = TRUE,
+    .tiles = gTilesetTiles_ForestCave,
+    .palettes = gTilesetPalettes_ForestCave,
+    .metatiles = gMetatiles_ForestCave,
+    .metatileAttributes = gMetatileAttributes_ForestCave,
+    .callback = NULL,
+};
+
 const struct Tileset gTileset_Dummy1 =
 {
     .isCompressed = TRUE,
@@ -380,6 +391,17 @@ const struct Tileset gTileset_ViridianForest =
     .palettes = gTilesetPalettes_ViridianForest,
     .metatiles = gMetatiles_ViridianForest,
     .metatileAttributes = gMetatileAttributes_ViridianForest,
+    .callback = NULL,
+};
+
+const struct Tileset gTileset_ViridianReserve =
+{
+    .isCompressed = TRUE,
+    .isSecondary = TRUE,
+    .tiles = gTilesetTiles_ViridianReserve,
+    .palettes = gTilesetPalettes_ViridianReserve,
+    .metatiles = gMetatiles_ViridianReserve,
+    .metatileAttributes = gMetatileAttributes_ViridianReserve,
     .callback = NULL,
 };
 

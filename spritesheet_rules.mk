@@ -325,6 +325,9 @@ $(OBJEVENTGFXDIR)/pokemon/deoxys_n.4bpp: %.4bpp: %.png
 $(OBJEVENTGFXDIR)/pokemon/doduo.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 2 -mheight 2
 
+$(OBJEVENTGFXDIR)/pokemon/celebi.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -mwidth 2 -mheight 4
+
 $(OBJEVENTGFXDIR)/pokemon/fearow.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 2 -mheight 2
 

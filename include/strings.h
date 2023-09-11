@@ -1047,6 +1047,7 @@ extern const u8 gText_RegionMap_AButtonOK[];
 extern const u8 gText_RegionMap_UpDownPick[];
 extern const u8 gText_RegionMap_NoData[];
 extern const u8 gText_RegionMap_AreaDesc_ViridianForest[];
+extern const u8 gText_RegionMap_AreaDesc_ViridianReserve[];
 extern const u8 gText_RegionMap_AreaDesc_MtMoon[];
 extern const u8 gText_RegionMap_AreaDesc_DiglettsCave[];
 extern const u8 gText_RegionMap_AreaDesc_VictoryRoad[];
@@ -1065,6 +1066,9 @@ extern const u8 gText_RegionMap_AreaDesc_TanobyRuins[];
 extern const u8 gText_RegionMap_AreaDesc_AlteringCave[];
 extern const u8 gText_RegionMap_AreaDesc_PatternBush[];
 extern const u8 gText_RegionMap_AreaDesc_DottedHole[];
+
+// custom map names
+extern const u8 sMapsecName_VIRIDIANRESERVE[];
 
 // field_screen_effect
 extern const u8 gText_PlayerScurriedToCenter[];

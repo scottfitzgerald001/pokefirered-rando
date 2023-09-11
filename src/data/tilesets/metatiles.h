@@ -82,6 +82,9 @@ const u32 gMetatileAttributes_GenericBuilding1[] = INCBIN_U32("data/tilesets/sec
 const u16 gMetatiles_Cave[] = INCBIN_U16("data/tilesets/secondary/cave/metatiles.bin");
 const u32 gMetatileAttributes_Cave[] = INCBIN_U32("data/tilesets/secondary/cave/metatile_attributes.bin");
 
+const u16 gMetatiles_ForestCave[] = INCBIN_U16("data/tilesets/secondary/forest_cave/metatiles.bin");
+const u32 gMetatileAttributes_ForestCave[] = INCBIN_U32("data/tilesets/secondary/forest_cave/metatile_attributes.bin");
+
 const u16 gMetatiles_GameCorner[] = INCBIN_U16("data/tilesets/secondary/game_corner/metatiles.bin");
 const u32 gMetatileAttributes_GameCorner[] = INCBIN_U32("data/tilesets/secondary/game_corner/metatile_attributes.bin");
 
@@ -96,6 +99,9 @@ const u32 gMetatileAttributes_Dummy2[] = INCBIN_U32("data/tilesets/secondary/dum
 
 const u16 gMetatiles_ViridianForest[] = INCBIN_U16("data/tilesets/secondary/viridian_forest/metatiles.bin");
 const u32 gMetatileAttributes_ViridianForest[] = INCBIN_U32("data/tilesets/secondary/viridian_forest/metatile_attributes.bin");
+
+const u16 gMetatiles_ViridianReserve[] = INCBIN_U16("data/tilesets/secondary/viridian_reserve/metatiles.bin");
+const u32 gMetatileAttributes_ViridianReserve[] = INCBIN_U32("data/tilesets/secondary/viridian_reserve/metatile_attributes.bin");
 
 const u16 gMetatiles_UnusedGatehouse1[] = INCBIN_U16("data/tilesets/secondary/unused_gatehouse_1/metatiles.bin");
 const u32 gMetatileAttributes_UnusedGatehouse1[] = INCBIN_U32("data/tilesets/secondary/unused_gatehouse_1/metatile_attributes.bin");

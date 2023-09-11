@@ -4,6 +4,7 @@
 enum MapPreviewScreenId
 {
     MPS_VIRIDIAN_FOREST = 0u,
+    MPS_VIRIDIAN_RESERVE,
     MPS_MT_MOON,
     MPS_DIGLETTS_CAVE,
     MPS_ROCK_TUNNEL,

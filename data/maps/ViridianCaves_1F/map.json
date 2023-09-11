@@ -1,0 +1,76 @@
+{
+  "id": "MAP_VIRIDIAN_CAVES_1F",
+  "name": "ViridianCaves_1F",
+  "layout": "LAYOUT_VIRIDIAN_CAVES_1F",
+  "music": "MUS_MT_MOON",
+  "region_map_section": "MAPSEC_VIRIDIAN_RESERVE",
+  "requires_flash": false,
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_cycling": true,
+  "allow_escaping": true,
+  "allow_running": true,
+  "show_map_name": true,
+  "floor_number": 1,
+  "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
+  "connections": 0,
+  "object_events": [
+    {
+      "type": "object",
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 91,
+      "y": 19,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warp_events": [
+    {
+      "x": 91,
+      "y": 23,
+      "elevation": 3,
+      "dest_map": "MAP_VIRIDIAN_RESERVE",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 56,
+      "y": 35,
+      "elevation": 5,
+      "dest_map": "MAP_VIRIDIAN_RESERVE",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 31,
+      "y": 10,
+      "elevation": 7,
+      "dest_map": "MAP_VIRIDIAN_RESERVE",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 65,
+      "y": 8,
+      "elevation": 7,
+      "dest_map": "MAP_VIRIDIAN_RESERVE",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 15,
+      "y": 37,
+      "elevation": 7,
+      "dest_map": "MAP_VIRIDIAN_RESERVE",
+      "dest_warp_id": "7"
+    }
+  ],
+  "coord_events": [
+
+  ],
+  "bg_events": [
+
+  ]
+}

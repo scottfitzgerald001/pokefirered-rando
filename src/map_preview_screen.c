@@ -90,6 +90,14 @@ static const struct MapPreviewScreen sMapPreviewScreenData[MPS_COUNT] = {
         .tilemapptr = sViridianForestMapPreviewTilemap,
         .palptr = sViridianForestMapPreviewPalette
     },
+    [MPS_VIRIDIAN_RESERVE] = {
+        .mapsec = MAPSEC_VIRIDIAN_RESERVE,
+        .type = MPS_TYPE_FOREST,
+        .flagId = FLAG_WORLD_MAP_VIRIDIAN_RESERVE,
+        .tilesptr = sViridianForestMapPreviewTiles,
+        .tilemapptr = sViridianForestMapPreviewTilemap,
+        .palptr = sViridianForestMapPreviewPalette
+    },
     [MPS_MT_MOON] = {
         .mapsec = MAPSEC_MT_MOON,
         .type = MPS_TYPE_CAVE,

@@ -180,6 +180,7 @@ static const s8 sAreaMarkers[][4] = {
     [DEX_AREA_PATTERN_BUSH]     = { MARKER_CIRCULAR,  76,  77 },
     [DEX_AREA_DOTTED_HOLE]      = { MARKER_CIRCULAR,  73,  95 },
     [DEX_AREA_TANOBY_CHAMBER]   = { MARKER_MED_H,     96,  90 },
+    [DEX_AREA_VIRIDIAN_RESERVE] = { MARKER_CIRCULAR,  48,  20 },
 };
 
 static void Task_ShowAreaMarkers(u8 taskId)

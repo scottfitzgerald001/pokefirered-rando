@@ -103,3 +103,5 @@ ViridianForest_Text_LeavingViridianForest::
     .string "LEAVING VIRIDIAN FOREST\n"
     .string "PEWTER CITY AHEAD$"
 
+ViridianForest_Text_ReserveSign::
+    .string "ENTERING VIRIDIAN NATURE RESERVE$"
